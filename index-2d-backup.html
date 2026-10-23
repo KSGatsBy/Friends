@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Central Perk · 老友记</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div id="cafe-scene" class="cafe-scene">
+
+    <!-- ========== BACK WALL ========== -->
+    <div class="back-wall"></div>
+
+    <!-- ========== WALL SCONCES (left & right of painting) ========== -->
+    <div class="sconce sconce-left">
+      <div class="sconce-base"></div>
+      <div class="sconce-arm"></div>
+      <div class="sconce-shade">
+        <div class="sconce-bulb"></div>
+      </div>
+      <div class="sconce-glow"></div>
+    </div>
+    <div class="sconce sconce-right">
+      <div class="sconce-base"></div>
+      <div class="sconce-arm"></div>
+      <div class="sconce-shade">
+        <div class="sconce-bulb"></div>
+      </div>
+      <div class="sconce-glow"></div>
+    </div>
+
+    <!-- ========== MOTORCYCLE PAINTING ========== -->
+    <div class="painting">
+      <div class="painting-frame"></div>
+      <div class="painting-canvas">
+        <div class="painting-bg"></div>
+        <div class="painting-motorcycle"></div>
+      </div>
+    </div>
+
+    <!-- ========== SERVICE SIGN ========== -->
+    <div class="service-sign">
+      <div class="service-sign-inner">
+        <span class="service-arrow">←</span>
+        <span class="service-text">SERVICE</span>
+      </div>
+    </div>
+
+    <!-- ========== PENDANT LIGHTS (3, across ceiling) ========== -->
+    <div class="pendant pendant-1">
+      <div class="pendant-cord"></div>
+      <div class="pendant-shade"><div class="pendant-bulb"></div></div>
+      <div class="pendant-glow"></div>
+    </div>
+    <div class="pendant pendant-2">
+      <div class="pendant-cord"></div>
+      <div class="pendant-shade"><div class="pendant-bulb"></div></div>
+      <div class="pendant-glow"></div>
+    </div>
+    <div class="pendant pendant-3">
+      <div class="pendant-cord"></div>
+      <div class="pendant-shade"><div class="pendant-bulb"></div></div>
+      <div class="pendant-glow"></div>
+    </div>
+
+    <!-- ========== GREEN DOOR FRAME + CURTAIN (left wall) ========== -->
+    <div class="green-door">
+      <div class="door-frame-left"></div>
+      <div class="door-frame-top"></div>
+      <div class="door-frame-right"></div>
+      <div class="door-curtain">
+        <div class="curtain-stripe c1"></div>
+        <div class="curtain-stripe c2"></div>
+        <div class="curtain-stripe c3"></div>
+        <div class="curtain-stripe c4"></div>
+      </div>
+    </div>
+
+    <!-- ========== FIREPLACE (right wall) ========== -->
+    <div class="fireplace">
+      <div class="fp-mantel">
+        <div class="fp-mantel-deco fp-mantel-deco-1"></div>
+        <div class="fp-mantel-deco fp-mantel-deco-2"></div>
+        <div class="fp-mantel-lamp"></div>
+      </div>
+      <div class="fp-surround">
+        <div class="fp-bricks">
+          <div class="fp-fire">
+            <div class="fp-flame fp-flame-1"></div>
+            <div class="fp-flame fp-flame-2"></div>
+            <div class="fp-flame fp-flame-3"></div>
+            <div class="fp-log"></div>
+          </div>
+          <div class="fp-fire-glow"></div>
+        </div>
+      </div>
+      <div class="fp-hearth"></div>
+    </div>
+
+    <!-- ========== GUITAR (right corner) ========== -->
+    <div class="guitar">
+      <div class="guitar-body"></div>
+      <div class="guitar-neck"></div>
+      <div class="guitar-head"></div>
+    </div>
+
+    <!-- ========== RED BENCH (right, by fireplace) ========== -->
+    <div class="red-bench">
+      <div class="rb-back"></div>
+      <div class="rb-seat"></div>
+      <div class="rb-leg rb-leg-1"></div>
+      <div class="rb-leg rb-leg-2"></div>
+    </div>
+
+    <!-- ========== MIC STAND (right) ========== -->
+    <div class="mic-stand">
+      <div class="mic-pole"></div>
+      <div class="mic-base"></div>
+      <div class="mic-head"></div>
+    </div>
+
+    <!-- ========== BAR AREA (left side) ========== -->
+    <div class="bar-area">
+      <!-- Track lights -->
+      <div class="track-light">
+        <div class="track-rail"></div>
+        <div class="track-bulb track-bulb-1"></div>
+        <div class="track-bulb track-bulb-2"></div>
+        <div class="track-bulb track-bulb-3"></div>
+      </div>
+
+      <!-- Shelves behind bar -->
+      <div class="bar-shelves">
+        <div class="shelf shelf-1">
+          <div class="shelf-item si-bottle"></div>
+          <div class="shelf-item si-jar"></div>
+          <div class="shelf-item si-cup"></div>
+          <div class="shelf-item si-bottle-2"></div>
+        </div>
+        <div class="shelf shelf-2">
+          <div class="shelf-item si-cup-2"></div>
+          <div class="shelf-item si-cup-3"></div>
+          <div class="shelf-item si-jar-2"></div>
+        </div>
+      </div>
+
+      <!-- Counter -->
+      <div class="bar-counter">
+        <div class="counter-top"></div>
+        <div class="counter-front">
+          <div class="counter-panel cp-1"></div>
+          <div class="counter-panel cp-2"></div>
+          <div class="counter-panel cp-3"></div>
+        </div>
+        <!-- Food on counter -->
+        <div class="counter-cake counter-cake-pink"></div>
+        <div class="counter-cake counter-cake-choc"></div>
+        <div class="counter-plate"></div>
+        <div class="counter-cup-sm"></div>
+      </div>
+    </div>
+
+    <!-- ========== RUG ========== -->
+    <div class="rug">
+      <div class="rug-inner">
+        <div class="rug-pattern rp-1"></div>
+        <div class="rug-pattern rp-2"></div>
+      </div>
+    </div>
+
+    <!-- ========== SOFA (center, facing viewer) ========== -->
+    <div class="sofa-container">
+      <!-- Sofa -->
+      <div class="sofa">
+        <div class="sofa-back"></div>
+        <div class="sofa-seat">
+          <div class="sofa-cushion sofa-cush-1"></div>
+          <div class="sofa-cushion sofa-cush-2"></div>
+        </div>
+        <div class="sofa-arm sofa-arm-l"></div>
+        <div class="sofa-arm sofa-arm-r"></div>
+      </div>
+
+      <!-- Characters sitting on sofa -->
+      <div class="chars-on-sofa">
+        <div class="char-slot" data-character="ross">
+          <div class="char-head char-head-ross"></div>
+          <div class="char-body"></div>
+          <span class="char-name">Ross</span>
+          <div class="speech-bubble bubble-top" data-character="ross"><span class="bubble-text"></span></div>
+        </div>
+        <div class="char-slot" data-character="rachel">
+          <div class="char-head char-head-rachel"></div>
+          <div class="char-body"></div>
+          <span class="char-name">Rachel</span>
+          <div class="speech-bubble bubble-top" data-character="rachel"><span class="bubble-text"></span></div>
+        </div>
+        <div class="char-slot" data-character="monica">
+          <div class="char-head char-head-monica"></div>
+          <div class="char-body"></div>
+          <span class="char-name">Monica</span>
+          <div class="speech-bubble bubble-top" data-character="monica"><span class="bubble-text"></span></div>
+        </div>
+        <div class="char-slot" data-character="chandler">
+          <div class="char-head char-head-chandler"></div>
+          <div class="char-body"></div>
+          <span class="char-name">Chandler</span>
+          <div class="speech-bubble bubble-top" data-character="chandler"><span class="bubble-text"></span></div>
+        </div>
+        <div class="char-slot" data-character="joey">
+          <div class="char-head char-head-joey"></div>
+          <div class="char-body"></div>
+          <span class="char-name">Joey</span>
+          <div class="speech-bubble bubble-top" data-character="joey"><span class="bubble-text"></span></div>
+        </div>
+        <div class="char-slot" data-character="phoebe">
+          <div class="char-head char-head-phoebe"></div>
+          <div class="char-body"></div>
+          <span class="char-name">Phoebe</span>
+          <div class="speech-bubble bubble-top" data-character="phoebe"><span class="bubble-text"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== COFFEE TABLE (in front of sofa) ========== -->
+    <div class="coffee-table">
+      <div class="ct-top"></div>
+      <div class="ct-leg ct-leg-1"></div>
+      <div class="ct-leg ct-leg-2"></div>
+      <div class="ct-leg ct-leg-3"></div>
+      <div class="ct-leg ct-leg-4"></div>
+      <!-- Coffee cups -->
+      <div class="ct-cup ct-cup-green">
+        <div class="cup-green-body"><div class="cup-green-handle"></div></div>
+        <div class="ct-saucer ct-saucer-green"></div>
+      </div>
+      <div class="ct-cup ct-cup-blue">
+        <div class="cup-blue-body"><div class="cup-blue-handle"></div></div>
+        <div class="ct-saucer ct-saucer-blue"></div>
+      </div>
+      <!-- Steam -->
+      <div class="steam-group" id="coffee-cup">
+        <div class="steam-wisp steam-wisp-1"></div>
+        <div class="steam-wisp steam-wisp-2"></div>
+        <div class="steam-wisp steam-wisp-3"></div>
+      </div>
+    </div>
+
+    <!-- ========== FLOOR ========== -->
+    <div class="floor"></div>
+
+    <!-- ========== AMBIENT OVERLAYS ========== -->
+    <div class="ambient-warmth"></div>
+    <div class="vignette"></div>
+
+    <!-- ========== CONTROLS ========== -->
+    <div class="controls">
+      <div class="ctrl-btn" id="time-toggle" title="切换时间">
+        <span class="ctrl-icon">☀️</span>
+      </div>
+      <button class="ctrl-btn" id="search-btn" title="搜索">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </button>
+      <button class="ctrl-btn" id="vocab-btn" title="生词本">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- ========== BIG QUOTE ========== -->
+    <div id="big-quote" class="big-quote hidden">
+      <div class="big-quote-card">
+        <span class="bq-char"></span>
+        <p class="bq-text"></p>
+        <button id="big-quote-close" class="bq-close">×</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========== SEARCH PANEL ========== -->
+  <div id="search-overlay" class="panel-overlay hidden">
+    <div class="panel-inner">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-lg font-bold text-gray-800">🔍 搜索台词</h2>
+        <button id="search-close" class="text-gray-400 hover:text-gray-700 text-2xl">×</button>
+      </div>
+      <input id="search-input" type="text" placeholder="搜索台词..." class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 focus:outline-none text-gray-800" autocomplete="off">
+      <div class="flex flex-wrap gap-2 mt-3" id="hot-searches"></div>
+      <div class="flex gap-3 mt-3">
+        <select id="season-filter" class="flex-1 px-3 py-2 rounded-full border border-gray-200 text-sm text-gray-700"><option value="">全部季</option></select>
+        <select id="episode-filter" class="flex-1 px-3 py-2 rounded-full border border-gray-200 text-sm text-gray-700"><option value="">全部集</option></select>
+      </div>
+      <div id="results-count" class="mt-3 text-sm text-gray-500 hidden"></div>
+      <div id="search-results" class="mt-3 space-y-2 max-h-80 overflow-y-auto custom-scrollbar"></div>
+      <div id="search-empty" class="text-center py-8 text-gray-400 hidden">没有找到匹配的台词</div>
+    </div>
+  </div>
+
+  <!-- ========== VOCAB PANEL ========== -->
+  <div id="vocab-overlay" class="panel-overlay hidden">
+    <div class="panel-inner">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-lg font-bold text-gray-800">📖 我的生词本</h2>
+        <button id="vocab-close" class="text-gray-400 hover:text-gray-700 text-2xl">×</button>
+      </div>
+      <div id="vocab-list" class="space-y-2 max-h-80 overflow-y-auto custom-scrollbar">
+        <p class="text-sm text-gray-400 text-center py-8">还没有添加生词 👀</p>
+      </div>
+      <button id="vocab-clear" class="mt-4 w-full py-2 text-sm text-red-400 border border-red-200 rounded-full hover:bg-red-50">清空全部生词</button>
+    </div>
+  </div>
+
+  <div id="panel-overlay" class="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 hidden"></div>
+  <div class="flash-msg"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
