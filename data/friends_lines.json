@@ -1,0 +1,162 @@
+[
+  {
+    "id": 1,
+    "season": 3,
+    "episode": 2,
+    "timestamp": "00:04:23",
+    "character": "Ross",
+    "text": "We were on a break!",
+    "context_before": [
+      "Monica: What are you doing here?",
+      "Ross: I came to talk to Rachel."
+    ],
+    "context_after": [
+      "Rachel: You had no right to sleep with that girl!",
+      "Ross: You said you needed a break."
+    ]
+  },
+  {
+    "id": 2,
+    "season": 1,
+    "episode": 1,
+    "timestamp": "00:02:15",
+    "character": "Joey",
+    "text": "How you doin'?",
+    "context_before": [
+      "Rachel: Hi, I'm Rachel. I'm new here.",
+      "Joey: Oh, really? Well, let me tell you something."
+    ],
+    "context_after": [
+      "Rachel: Is that your line?",
+      "Monica: Joey, stop it. She just got here."
+    ]
+  },
+  {
+    "id": 3,
+    "season": 5,
+    "episode": 16,
+    "timestamp": "00:12:35",
+    "character": "Ross",
+    "text": "PIVOT!",
+    "context_before": [
+      "Chandler: I can't push it anymore.",
+      "Ross: You just have to turn it slightly."
+    ],
+    "context_after": [
+      "Chandler: SHUT UP! SHUT UP! SHUT UP!",
+      "Ross: You're not pivoting it right."
+    ]
+  },
+  {
+    "id": 4,
+    "season": 2,
+    "episode": 6,
+    "timestamp": "00:08:42",
+    "character": "Phoebe",
+    "text": "Smelly cat, smelly cat, what are they feeding you?",
+    "context_before": [
+      "Monica: Phoebe, can you play something at Central Perk tonight?",
+      "Phoebe: I just wrote a new song."
+    ],
+    "context_after": [
+      "Rachel: Oh, that's... really catchy.",
+      "Phoebe: Thanks! It's based on a true story."
+    ]
+  },
+  {
+    "id": 5,
+    "season": 4,
+    "episode": 12,
+    "timestamp": "00:15:10",
+    "character": "Chandler",
+    "text": "Could I BE any more sarcastic?",
+    "context_before": [
+      "Monica: Chandler, can you take this seriously for once?",
+      "Chandler: I am taking it seriously."
+    ],
+    "context_after": [
+      "Monica: That's exactly what I'm talking about.",
+      "Joey: He's got a point though."
+    ]
+  },
+  {
+    "id": 6,
+    "season": 6,
+    "episode": 9,
+    "timestamp": "00:05:30",
+    "character": "Rachel",
+    "text": "No uterus, no opinion.",
+    "context_before": [
+      "Ross: I don't understand why you're so upset.",
+      "Rachel: You don't have to understand. You just have to support me."
+    ],
+    "context_after": [
+      "Ross: I'm just trying to help.",
+      "Monica: Ross, just stop talking."
+    ]
+  },
+  {
+    "id": 7,
+    "season": 10,
+    "episode": 3,
+    "timestamp": "00:11:20",
+    "character": "Monica",
+    "text": "I KNOW!",
+    "context_before": [
+      "Phoebe: That's a really great idea.",
+      "Monica: You think so?"
+    ],
+    "context_after": [
+      "Chandler: And she's off.",
+      "Joey: Here comes the organizing."
+    ]
+  },
+  {
+    "id": 8,
+    "season": 7,
+    "episode": 14,
+    "timestamp": "00:18:45",
+    "character": "Joey",
+    "text": "Joey doesn't share food!",
+    "context_before": [
+      "Date: Can I have a fry?",
+      "Joey: Uh, I'm sorry. I can't let you do that."
+    ],
+    "context_after": [
+      "Date: Excuse me?",
+      "Joey: It's just a rule I have. Nothing personal."
+    ]
+  },
+  {
+    "id": 9,
+    "season": 6,
+    "episode": 4,
+    "timestamp": "00:03:50",
+    "character": "Ross",
+    "text": "Unagi.",
+    "context_before": [
+      "Rachel: What are you doing?",
+      "Ross: I'm practicing my karate."
+    ],
+    "context_after": [
+      "Phoebe: That's not what unagi means.",
+      "Ross: Oh really? What does it mean then?"
+    ]
+  },
+  {
+    "id": 10,
+    "season": 8,
+    "episode": 22,
+    "timestamp": "00:20:10",
+    "character": "Monica",
+    "text": "Seven! Seven! Seven!",
+    "context_before": [
+      "Chandler: I found the perfect spot.",
+      "Monica: What spot? What are you talking about?"
+    ],
+    "context_after": [
+      "Rachel: Oh no, here we go.",
+      "Phoebe: Is this about the erogenous zones again?"
+    ]
+  }
+]
