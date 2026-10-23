@@ -305,9 +305,9 @@ function buildShell(){
   const lwGeo=new THREE.BoxGeometry(C.wallT,C.H,C.D+2*C.wallT);
   const lw=new THREE.Mesh(lwGeo,matPainted(0xE8D8B8));lw.position.set(-C.W/2-C.wallT/2,C.H/2,0);lw.receiveShadow=true;g.add(lw);
 
-  // Right wall — cream painted upper
+  // Right wall — exposed brick (matches reference, fireplace area)
   const rwGeo=new THREE.BoxGeometry(C.wallT,C.H,C.D+2*C.wallT);
-  const rw=new THREE.Mesh(rwGeo,matPainted(0xE8D8B8));rw.position.set(C.W/2+C.wallT/2,C.H/2,0);rw.receiveShadow=true;g.add(rw);
+  const rw=new THREE.Mesh(rwGeo,matBrick);rw.position.set(C.W/2+C.wallT/2,C.H/2,0);rw.receiveShadow=true;g.add(rw);
 
   // ── Wainscoting (dark wood lower wall paneling, ~4.5 units tall) ──
   const wainscotH = 4.5;
