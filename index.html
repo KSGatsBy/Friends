@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Central Perk · 咖啡馆微缩模型</title>
+<link rel="stylesheet" href="styles.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+</head>
+<body>
+
+<!-- ── Loading ── -->
+<div id="loading">
+  <div class="loading-box">
+    <div class="loading-cup"><div class="l-steam ls1"></div><div class="l-steam ls2"></div><div class="l-steam ls3"></div><div class="l-cupbody"></div></div>
+    <h1>Central Perk</h1>
+    <p class="l-sub">正在冲泡你的咖啡馆…</p>
+  </div>
+</div>
+
+<div id="app"></div>
+
+<!-- ── View panel ── -->
+<div id="view-panel">
+  <button class="vbtn" data-view="overview">全景</button>
+  <button class="vbtn" data-view="front">正面</button>
+  <button class="vbtn" data-view="sofa">沙发</button>
+  <button class="vbtn" data-view="bar">吧台</button>
+  <button class="vbtn" data-view="stage">舞台</button>
+  <button class="vbtn" data-view="top">俯瞰</button>
+  <button class="vbtn" data-view="reset">重置</button>
+  <div class="vp-div"></div>
+  <button class="vbtn toggle" id="btn-light">
+    <svg class="btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    <span>关灯</span>
+  </button>
+  <button class="vbtn toggle" id="btn-rotate">
+    <svg class="btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+    <span>自动旋转</span>
+  </button>
+  <button class="vbtn toggle" id="btn-fullscreen">
+    <svg class="btn-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+    <span>全屏</span>
+  </button>
+</div>
+
+<!-- ── Info card ── -->
+<div id="info-card" class="hidden"><button id="info-close">×</button><h3 id="info-title"></h3><p id="info-desc"></p></div>
+
+<!-- ── Hint ── -->
+<div id="hint">
+  <div class="h-row"><span class="h-key">拖动</span>旋转<span class="h-key" style="margin-left:6px">滚轮</span>缩放</div>
+  <div class="h-tip">点击沙发、吧台、舞台或壁炉查看介绍</div>
+</div>
+
+<div id="tooltip" class="hidden"></div>
+
+<script type="module" src="./scene.js"></script>
+<script>
+// Error diagnostics
+window.addEventListener('error', function(e){
+  var msg = e.error ? e.error.message : (e.message||'Unknown load error');
+  var el = document.getElementById('loading');
+  if(el) el.classList.add('done');
+  document.body.insertAdjacentHTML('beforeend','<div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#5a1a0a;color:#ffb347;padding:30px 40px;border-radius:12px;font:15px/1.6 monospace;z-index:9999;max-width:90vw;text-align:center;">ERROR: '+msg+'</div>');
+}, true);
+// Safety net: force hide loading after 8 seconds
+setTimeout(function(){
+  var l = document.getElementById('loading');
+  if(l && !l.classList.contains('done')){
+    l.classList.add('done');
+    document.body.insertAdjacentHTML('beforeend','<div style="position:fixed;bottom:20px;right:20px;background:#1a0a04;color:#ffb347;padding:12px 20px;border-radius:8px;font-family:monospace;font-size:13px;z-index:9999;">Scene may have failed — check CDN or Browser Console (F12)</div>');
+  }
+}, 8000);
+</script>
+</body>
+</html>
