@@ -18,8 +18,8 @@ const C = {
     brass:0xB08D4F,metal:0x2A2A2A,glass:0x9FB8C8,rugRed:0x5A2E1E,rugCream:0xC9A882
   },
   cam:{fov:42,near:0.1,far:400,start:[0,10.5,14],tgt:[0,2.2,0],ms:900},
-  light:{ambient:0.45,hemi:0.40,key:2.8,keyRange:50,window:0.65,windowFill:0.50,stage:2.2,bar:3.0},
-  render:{maxPR:2,exposure:1.25,fogN:42,fogF:128}
+  light:{ambient:0.65,hemi:0.55,key:3.2,keyRange:50,window:0.55,windowFill:0.45,stage:2.5,bar:3.5},
+  render:{maxPR:2,exposure:1.4,fogN:42,fogF:128}
 };
 
 // ═══════════════════════════════════════════════════════════════
@@ -88,6 +88,39 @@ L.stage.position.set(C.W/2 - 1, 3.5, -1.5); L.stage.castShadow = true;
 L.stage.shadow.mapSize.set(512, 512);
 L.stage.shadow.camera.near = 0.2; L.stage.shadow.camera.far = 25;
 L.stage.shadow.bias = -0.0006;
+
+// ── Pendant lights (3 hanging warm bulbs from ceiling) ──
+L.pendants = [];
+const pendantPositions = [[-4, -2], [0, 0], [4, -2]];
+pendantPositions.forEach(([px, pz]) => {
+  const pl = new THREE.PointLight(0xFFC880, 1.8, 12, 1.5);
+  pl.position.set(px, C.H - 1.2, pz);
+  pl.castShadow = true;
+  pl.shadow.mapSize.set(512, 512);
+  pl.shadow.camera.near = 0.2; pl.shadow.camera.far = 20;
+  pl.shadow.bias = -0.0005;
+  scene.add(pl);
+  L.pendants.push(pl);
+
+  // Pendant cord + shade (visual mesh)
+  const cordGeo = new THREE.CylinderGeometry(0.03, 0.03, 1.0, 6);
+  const cord = new THREE.Mesh(cordGeo, matMetal(0x1A1A1A));
+  cord.position.set(px, C.H - 0.5, pz);
+  world.add(cord);
+  const shadeGeo = new THREE.ConeGeometry(0.45, 0.5, 16, 1, true);
+  const shade = new THREE.Mesh(shadeGeo, new THREE.MeshStandardMaterial({
+    color: 0xD4A850, roughness: 0.5, side: THREE.DoubleSide,
+    emissive: 0xFFC070, emissiveIntensity: 0.3
+  }));
+  shade.position.set(px, C.H - 1.1, pz);
+  world.add(shade);
+  const bulbGeo = new THREE.SphereGeometry(0.12, 8, 6);
+  const bulb = new THREE.Mesh(bulbGeo, new THREE.MeshStandardMaterial({
+    color: 0xFFF8D0, emissive: 0xFFE066, emissiveIntensity: 2.5
+  }));
+  bulb.position.set(px, C.H - 1.3, pz);
+  world.add(bulb);
+});
 
 Object.values(L).forEach(l => { if (l && l.isLight) scene.add(l); });
 
@@ -259,24 +292,50 @@ function buildShell(){
   const thresholdGeo=new THREE.BoxGeometry(7,0.04,0.15);
   const threshold=new THREE.Mesh(thresholdGeo,matWood(0x3E2723));threshold.position.set(-C.W/2+3.5,0.02,1.5);threshold.receiveShadow=true;g.add(threshold);
 
-  // Back wall (cream — painted)
+  // Back wall — exposed brick (Central Perk signature look)
   const bwGeo=new THREE.BoxGeometry(C.W+2*C.wallT,C.H,C.wallT);
-  const bw=new THREE.Mesh(bwGeo,matPainted(0xE8D8B8));bw.position.set(0,C.H/2,-C.D/2-C.wallT/2);bw.castShadow=true;bw.receiveShadow=true;g.add(bw);
+  const bw=new THREE.Mesh(bwGeo,matBrick);bw.position.set(0,C.H/2,-C.D/2-C.wallT/2);bw.castShadow=true;bw.receiveShadow=true;g.add(bw);
 
-  // Left wall
+  // Left wall — cream painted upper, dark wainscoting lower
   const lwGeo=new THREE.BoxGeometry(C.wallT,C.H,C.D+2*C.wallT);
   const lw=new THREE.Mesh(lwGeo,matPainted(0xE8D8B8));lw.position.set(-C.W/2-C.wallT/2,C.H/2,0);lw.receiveShadow=true;g.add(lw);
 
-  // Right wall — cream painted (same as left), brick only as accent panel
+  // Right wall — cream painted upper
   const rwGeo=new THREE.BoxGeometry(C.wallT,C.H,C.D+2*C.wallT);
   const rw=new THREE.Mesh(rwGeo,matPainted(0xE8D8B8));rw.position.set(C.W/2+C.wallT/2,C.H/2,0);rw.receiveShadow=true;g.add(rw);
 
-  // Brick accent panel — right rear, 5 wide × 8 tall, inset into wall
-  const brickPanelGeo=new THREE.PlaneGeometry(5,8);
-  const brickPanel=new THREE.Mesh(brickPanelGeo,matBrick);
-  brickPanel.rotation.y=Math.PI/2;
-  brickPanel.position.set(C.W/2+C.wallT/2+0.01, 4.5, -3); // centered rear-right
-  brickPanel.receiveShadow=true; g.add(brickPanel);
+  // ── Wainscoting (dark wood lower wall paneling, ~4.5 units tall) ──
+  const wainscotH = 4.5;
+  const wainscotMat = matWood(0x2E1F14);
+  // Back wall wainscoting
+  const bwWainscotGeo = new THREE.BoxGeometry(C.W+2*C.wallT, wainscotH, 0.08);
+  const bwWainscot = new THREE.Mesh(bwWainscotGeo, wainscotMat);
+  bwWainscot.position.set(0, wainscotH/2, -C.D/2 - C.wallT/2 + 0.05);
+  g.add(bwWainscot);
+  // Left wall wainscoting
+  const lwWainscotGeo = new THREE.BoxGeometry(0.08, wainscotH, C.D+2*C.wallT);
+  const lwWainscot = new THREE.Mesh(lwWainscotGeo, wainscotMat);
+  lwWainscot.position.set(-C.W/2 - C.wallT/2 + 0.05, wainscotH/2, 0);
+  g.add(lwWainscot);
+  // Right wall wainscoting
+  const rwWainscotGeo = new THREE.BoxGeometry(0.08, wainscotH, C.D+2*C.wallT);
+  const rwWainscot = new THREE.Mesh(rwWainscotGeo, wainscotMat);
+  rwWainscot.position.set(C.W/2 + C.wallT/2 - 0.05, wainscotH/2, 0);
+  g.add(rwWainscot);
+  // Wainscot chair rail (horizontal trim at top)
+  const railMat = matWood(0x4A3020);
+  const bwRailGeo = new THREE.BoxGeometry(C.W+2*C.wallT, 0.18, 0.15);
+  const bwRail = new THREE.Mesh(bwRailGeo, railMat);
+  bwRail.position.set(0, wainscotH, -C.D/2 - C.wallT/2 + 0.1);
+  g.add(bwRail);
+  const lwRailGeo = new THREE.BoxGeometry(0.15, 0.18, C.D+2*C.wallT);
+  const lwRail = new THREE.Mesh(lwRailGeo, railMat);
+  lwRail.position.set(-C.W/2 - C.wallT/2 + 0.1, wainscotH, 0);
+  g.add(lwRail);
+  const rwRailGeo = new THREE.BoxGeometry(0.15, 0.18, C.D+2*C.wallT);
+  const rwRail = new THREE.Mesh(rwRailGeo, railMat);
+  rwRail.position.set(C.W/2 + C.wallT/2 - 0.1, wainscotH, 0);
+  g.add(rwRail);
 
   // Right wall lower decorative panel (wood) — removed; brick accent panel replaces it
 
