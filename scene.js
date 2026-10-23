@@ -101,25 +101,6 @@ pendantPositions.forEach(([px, pz]) => {
   pl.shadow.bias = -0.0005;
   scene.add(pl);
   L.pendants.push(pl);
-
-  // Pendant cord + shade (visual mesh)
-  const cordGeo = new THREE.CylinderGeometry(0.03, 0.03, 1.0, 6);
-  const cord = new THREE.Mesh(cordGeo, matMetal(0x1A1A1A));
-  cord.position.set(px, C.H - 0.5, pz);
-  world.add(cord);
-  const shadeGeo = new THREE.ConeGeometry(0.45, 0.5, 16, 1, true);
-  const shade = new THREE.Mesh(shadeGeo, new THREE.MeshStandardMaterial({
-    color: 0xD4A850, roughness: 0.5, side: THREE.DoubleSide,
-    emissive: 0xFFC070, emissiveIntensity: 0.3
-  }));
-  shade.position.set(px, C.H - 1.1, pz);
-  world.add(shade);
-  const bulbGeo = new THREE.SphereGeometry(0.12, 8, 6);
-  const bulb = new THREE.Mesh(bulbGeo, new THREE.MeshStandardMaterial({
-    color: 0xFFF8D0, emissive: 0xFFE066, emissiveIntensity: 2.5
-  }));
-  bulb.position.set(px, C.H - 1.3, pz);
-  world.add(bulb);
 });
 
 Object.values(L).forEach(l => { if (l && l.isLight) scene.add(l); });
@@ -128,6 +109,30 @@ Object.values(L).forEach(l => { if (l && l.isLight) scene.add(l); });
 // WORLD ROOT
 // ═══════════════════════════════════════════════════════════════
 const world = new THREE.Group(); scene.add(world);
+
+// ── Pendant light visual meshes (cord + shade + bulb) ──
+{
+  const cordMat = new THREE.MeshStandardMaterial({color:0x1A1A1A, roughness:0.6});
+  pendantPositions.forEach(([px, pz]) => {
+    const cordGeo = new THREE.CylinderGeometry(0.03, 0.03, 1.0, 6);
+    const cord = new THREE.Mesh(cordGeo, cordMat);
+    cord.position.set(px, C.H - 0.5, pz);
+    world.add(cord);
+    const shadeGeo = new THREE.ConeGeometry(0.45, 0.5, 16, 1, true);
+    const shade = new THREE.Mesh(shadeGeo, new THREE.MeshStandardMaterial({
+      color: 0xD4A850, roughness: 0.5, side: THREE.DoubleSide,
+      emissive: 0xFFC070, emissiveIntensity: 0.3
+    }));
+    shade.position.set(px, C.H - 1.1, pz);
+    world.add(shade);
+    const bulbGeo = new THREE.SphereGeometry(0.12, 8, 6);
+    const bulb = new THREE.Mesh(bulbGeo, new THREE.MeshStandardMaterial({
+      color: 0xFFF8D0, emissive: 0xFFE066, emissiveIntensity: 2.5
+    }));
+    bulb.position.set(px, C.H - 1.3, pz);
+    world.add(bulb);
+  });
+}
 
 // ═══════════════════════════════════════════════════════════════
 // MATERIAL CACHE — distinct families per surface role
