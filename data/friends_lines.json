@@ -6,13 +6,14 @@
     "timestamp": "00:04:23",
     "character": "Ross",
     "text": "We were on a break!",
+    "translation": "我们当时已经分手（冷静期）了！",
     "context_before": [
       "Monica: What are you doing here?",
       "Ross: I came to talk to Rachel."
     ],
     "context_after": [
       "Rachel: You had no right to sleep with that girl!",
-      "Ross: You said you needed a break."
+      "Chandler: Oh boy, here we go again."
     ]
   },
   {
@@ -22,12 +23,13 @@
     "timestamp": "00:02:15",
     "character": "Joey",
     "text": "How you doin'?",
+    "translation": "近来可好啊，美女？",
     "context_before": [
       "Rachel: Hi, I'm Rachel. I'm new here.",
       "Joey: Oh, really? Well, let me tell you something."
     ],
     "context_after": [
-      "Rachel: Is that your line?",
+      "Rachel: Is that your signature line?",
       "Monica: Joey, stop it. She just got here."
     ]
   },
@@ -37,14 +39,15 @@
     "episode": 16,
     "timestamp": "00:12:35",
     "character": "Ross",
-    "text": "PIVOT!",
+    "text": "PIVOT! PIVOT! PIVOT!",
+    "translation": "拐弯！往这边拐！拐啊！",
     "context_before": [
-      "Chandler: I can't push it anymore.",
+      "Chandler: I can't push this couch anymore.",
       "Ross: You just have to turn it slightly."
     ],
     "context_after": [
       "Chandler: SHUT UP! SHUT UP! SHUT UP!",
-      "Ross: You're not pivoting it right."
+      "Rachel: I don't think it's gonna pivot anymore."
     ]
   },
   {
@@ -54,13 +57,14 @@
     "timestamp": "00:08:42",
     "character": "Phoebe",
     "text": "Smelly cat, smelly cat, what are they feeding you?",
+    "translation": "臭臭猫，臭臭猫，他们到底给你喂了什么？",
     "context_before": [
-      "Monica: Phoebe, can you play something at Central Perk tonight?",
-      "Phoebe: I just wrote a new song."
+      "Monica: Phoebe, are you playing at Central Perk tonight?",
+      "Phoebe: Yes! I just finished a brand new song."
     ],
     "context_after": [
-      "Rachel: Oh, that's... really catchy.",
-      "Phoebe: Thanks! It's based on a true story."
+      "Rachel: Oh, that's... weirdly catchy.",
+      "Phoebe: Thanks! It's not his fault."
     ]
   },
   {
@@ -70,29 +74,31 @@
     "timestamp": "00:15:10",
     "character": "Chandler",
     "text": "Could I BE any more sarcastic?",
+    "translation": "我还能再讽刺一点吗？",
     "context_before": [
       "Monica: Chandler, can you take this seriously for once?",
-      "Chandler: I am taking it seriously."
+      "Chandler: I am taking it very seriously."
     ],
     "context_after": [
-      "Monica: That's exactly what I'm talking about.",
-      "Joey: He's got a point though."
+      "Monica: That tone is exactly what I'm talking about.",
+      "Joey: Honestly, I think he's got a point."
     ]
   },
   {
     "id": 6,
-    "season": 6,
-    "episode": 9,
+    "season": 8,
+    "episode": 14,
     "timestamp": "00:05:30",
     "character": "Rachel",
     "text": "No uterus, no opinion.",
+    "translation": "没子宫的人，没资格发表意见。",
     "context_before": [
-      "Ross: I don't understand why you're so upset.",
-      "Rachel: You don't have to understand. You just have to support me."
+      "Ross: Wait, Braxton Hicks contractions aren't even real pain, right?",
+      "Monica: Ross, tread very carefully."
     ],
     "context_after": [
-      "Ross: I'm just trying to help.",
-      "Monica: Ross, just stop talking."
+      "Ross: I'm just reading what the parenting book says!",
+      "Monica: Seriously, Ross, stop talking."
     ]
   },
   {
@@ -102,61 +108,235 @@
     "timestamp": "00:11:20",
     "character": "Monica",
     "text": "I KNOW!",
+    "translation": "我知道！！",
     "context_before": [
-      "Phoebe: That's a really great idea.",
-      "Monica: You think so?"
+      "Rachel: Can you believe we always get the best couch in Central Perk?",
+      "Phoebe: And Gunther always brings our coffee first!"
     ],
     "context_after": [
-      "Chandler: And she's off.",
-      "Joey: Here comes the organizing."
+      "Chandler: And there's the volume we all love.",
+      "Joey: My ears are still ringing."
     ]
   },
   {
     "id": 8,
-    "season": 7,
-    "episode": 14,
+    "season": 10,
+    "episode": 9,
     "timestamp": "00:18:45",
     "character": "Joey",
     "text": "Joey doesn't share food!",
+    "translation": "乔伊从不跟人分享食物！",
     "context_before": [
-      "Date: Can I have a fry?",
-      "Joey: Uh, I'm sorry. I can't let you do that."
+      "Rachel: So how did your dinner date go last night?",
+      "Joey: Everything was fine until she reached across the table for my fries."
     ],
     "context_after": [
-      "Date: Excuse me?",
-      "Joey: It's just a rule I have. Nothing personal."
+      "Phoebe: You didn't let her have one single fry?",
+      "Joey: It's a rule! I ordered the muffin on the counter just for me too."
     ]
   },
   {
     "id": 9,
     "season": 6,
-    "episode": 4,
+    "episode": 17,
     "timestamp": "00:03:50",
     "character": "Ross",
-    "text": "Unagi.",
+    "text": "Unagi is a state of total awareness.",
+    "translation": "“鳗鱼（Unagi）”是一种全然戒备的终极境界。",
     "context_before": [
-      "Rachel: What are you doing?",
-      "Ross: I'm practicing my karate."
+      "Rachel: Ross, why are you touching your temples like that?",
+      "Phoebe: Did you get another bad headache?"
     ],
     "context_after": [
-      "Phoebe: That's not what unagi means.",
-      "Ross: Oh really? What does it mean then?"
+      "Rachel: Pretty sure unagi is freshwater eel at the sushi bar.",
+      "Chandler: Say it again and I'll order you with soy sauce."
     ]
   },
   {
     "id": 10,
-    "season": 8,
-    "episode": 22,
+    "season": 4,
+    "episode": 11,
     "timestamp": "00:20:10",
     "character": "Monica",
     "text": "Seven! Seven! Seven!",
+    "translation": "七！七！七！",
     "context_before": [
-      "Chandler: I found the perfect spot.",
-      "Monica: What spot? What are you talking about?"
+      "Chandler: I really need some relationship advice here.",
+      "Rachel: Well, Monica drew a whole diagram on a napkin."
     ],
     "context_after": [
-      "Rachel: Oh no, here we go.",
-      "Phoebe: Is this about the erogenous zones again?"
+      "Joey: Wait, why are there numbers on that napkin?",
+      "Chandler: I think I need another cup of coffee."
+    ]
+  },
+  {
+    "id": 11,
+    "season": 1,
+    "episode": 1,
+    "timestamp": "00:06:12",
+    "character": "Monica",
+    "text": "Welcome to the real world. It sucks. You're gonna love it.",
+    "translation": "欢迎来到真实世界。它糟透了，但你会爱上它的。",
+    "context_before": [
+      "Rachel: I just cut up all my credit cards.",
+      "Chandler: That must have been tough on the scissors."
+    ],
+    "context_after": [
+      "Ross: We're all here for you, Rach.",
+      "Rachel: Okay, who wants coffee?Wait, I don't work here yet."
+    ]
+  },
+  {
+    "id": 12,
+    "season": 2,
+    "episode": 14,
+    "timestamp": "00:19:40",
+    "character": "Phoebe",
+    "text": "See? He's her lobster!",
+    "translation": "看到了吧？他就是她的那只龙虾（天生一对）！",
+    "context_before": [
+      "Joey: Why do you keep calling Ross a lobster?",
+      "Phoebe: Because lobsters fall in love and mate for life!"
+    ],
+    "context_after": [
+      "Monica: They actually walk around the tank holding claws?",
+      "Chandler: Great, now I feel guilty about seafood."
+    ]
+  },
+  {
+    "id": 13,
+    "season": 3,
+    "episode": 6,
+    "timestamp": "00:01:45",
+    "character": "Chandler",
+    "text": "Hi, I'm Chandler. I make jokes when I'm uncomfortable.",
+    "translation": "嗨，我是钱德勒。我一紧张尴尬就会讲笑话。",
+    "context_before": [
+      "Rachel: Why did you just say that to her?",
+      "Monica: Honestly Chandler, you panicked."
+    ],
+    "context_after": [
+      "Joey: At least you didn't do the awkward laugh.",
+      "Ross: No, he saved that for the elevator."
+    ]
+  },
+  {
+    "id": 14,
+    "season": 2,
+    "episode": 7,
+    "timestamp": "00:14:22",
+    "character": "Rachel",
+    "text": "You're over me? When were you... under me?",
+    "translation": "你已经放下我了？那你什么时候……曾经喜欢过我？",
+    "context_before": [
+      "Ross: Look Rachel, I'm happy for you, I've moved on.",
+      "Rachel: Wait a second, what do you mean by that?"
+    ],
+    "context_after": [
+      "Ross: Well, basically... the whole time.",
+      "Joey: Whoa, plot twist at the coffee table."
+    ]
+  },
+  {
+    "id": 15,
+    "season": 5,
+    "episode": 14,
+    "timestamp": "00:21:05",
+    "character": "Phoebe",
+    "text": "They don't know that we know they know we know!",
+    "translation": "他们还不知道我们已经知道他们知道我们知道了！",
+    "context_before": [
+      "Rachel: Monica and Chandler are trying to trick us.",
+      "Joey: My brain hurts. Can we just tell them?"
+    ],
+    "context_after": [
+      "Phoebe: Joey, you can't say anything!",
+      "Joey: Couldn't if I wanted to."
+    ]
+  },
+  {
+    "id": 16,
+    "season": 3,
+    "episode": 2,
+    "timestamp": "00:09:18",
+    "character": "Joey",
+    "text": "Look at me! I'm Chandler! Could I BE wearing any more clothes?",
+    "translation": "快看我！我是钱德勒！我身上穿的衣服还能再多一点吗？",
+    "context_before": [
+      "Chandler: Where did all my sweaters go?",
+      "Monica: Joey walked in five minutes ago looking suspiciously round."
+    ],
+    "context_after": [
+      "Chandler: That is so not true.",
+      "Ross: And please stop doing lunges in my living room."
+    ]
+  },
+  {
+    "id": 17,
+    "season": 5,
+    "episode": 8,
+    "timestamp": "00:13:50",
+    "character": "Ross",
+    "text": "MY SANDWICH?! You ate MY sandwich?!",
+    "translation": "我的三明治？！你居然吃了我的感恩节三明治？！",
+    "context_before": [
+      "Monica: Did someone at the museum take your lunch?",
+      "Ross: It had the Moist Maker gravy-soaked bread in the middle!"
+    ],
+    "context_after": [
+      "Phoebe: Remind me never to touch Ross's leftovers.",
+      "Chandler: Even the pigeons outside got scared."
+    ]
+  },
+  {
+    "id": 18,
+    "season": 4,
+    "episode": 1,
+    "timestamp": "00:07:33",
+    "character": "Rachel",
+    "text": "It was eighteen pages. FRONT AND BACK!",
+    "translation": "那封信足足有十八页。还是正反两面写满的！",
+    "context_before": [
+      "Ross: Look, it was five thirty in the morning and I fell asleep!",
+      "Monica: Wait, you didn't even finish reading her letter?"
+    ],
+    "context_after": [
+      "Ross: And by the way, Y-O-U-apostrophe-R-E means 'you are'!",
+      "Chandler: Grammar correction right now? Bold strategy, Ross."
+    ]
+  },
+  {
+    "id": 19,
+    "season": 6,
+    "episode": 2,
+    "timestamp": "00:10:15",
+    "character": "Phoebe",
+    "text": "I wish I could, but I don't want to.",
+    "translation": "我也很想帮忙，但我实在不想去。",
+    "context_before": [
+      "Ross: Hey Pheebs, want to help us move some boxes this afternoon?",
+      "Joey: Yeah, there's free pizza at the end."
+    ],
+    "context_after": [
+      "Monica: Well, at least she's honest.",
+      "Rachel: Honestly, I respect that energy."
+    ]
+  },
+  {
+    "id": 20,
+    "season": 5,
+    "episode": 11,
+    "timestamp": "00:16:04",
+    "character": "Joey",
+    "text": "It's a moo point. Like a cow's opinion—it doesn't matter.",
+    "translation": "这叫“哞”点（无意义的观点）。就像奶牛的意见一样——根本无所谓。",
+    "context_before": [
+      "Rachel: Do you think he's going to call me back?",
+      "Joey: If he doesn't, it's all a moo point anyway."
+    ],
+    "context_after": [
+      "Rachel: Have I been hanging out with you too long, or did that just make sense?",
+      "Chandler: Don't listen to him, it's 'moot', not 'moo'."
     ]
   }
 ]

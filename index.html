@@ -3,326 +3,319 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Central Perk · 老友记</title>
+  <title>Central Perk · 3D 等轴测体素老友记咖啡馆</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <!-- Three.js & OrbitControls & FlexSearch -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flexsearch@0.7.31/dist/flexsearch.bundle.js"></script>
+  <link rel="stylesheet" href="styles.css?v=20261028b">
 </head>
 <body>
 
-  <div id="cafe-scene" class="cafe-scene">
+  <!-- ==================== 3D ISOMETRIC VOXEL VIEWPORT ==================== -->
+  <div id="cafe-scene" class="cafe-scene studio">
+    <canvas id="voxel-canvas"></canvas>
 
-    <!-- ========== BACK WALL ========== -->
-    <div class="back-wall"></div>
-
-    <!-- ========== WALL SCONCES (left & right of painting) ========== -->
-    <div class="sconce sconce-left">
-      <div class="sconce-base"></div>
-      <div class="sconce-arm"></div>
-      <div class="sconce-shade">
-        <div class="sconce-bulb"></div>
-      </div>
-      <div class="sconce-glow"></div>
-    </div>
-    <div class="sconce sconce-right">
-      <div class="sconce-base"></div>
-      <div class="sconce-arm"></div>
-      <div class="sconce-shade">
-        <div class="sconce-bulb"></div>
-      </div>
-      <div class="sconce-glow"></div>
-    </div>
-
-    <!-- ========== MOTORCYCLE PAINTING ========== -->
-    <div class="painting">
-      <div class="painting-frame"></div>
-      <div class="painting-canvas">
-        <div class="painting-bg"></div>
-        <div class="painting-motorcycle"></div>
-      </div>
-    </div>
-
-    <!-- ========== SERVICE SIGN ========== -->
-    <div class="service-sign">
-      <div class="service-sign-inner">
-        <span class="service-arrow">←</span>
-        <span class="service-text">SERVICE</span>
-      </div>
-    </div>
-
-    <!-- ========== PENDANT LIGHTS (3, across ceiling) ========== -->
-    <div class="pendant pendant-1">
-      <div class="pendant-cord"></div>
-      <div class="pendant-shade"><div class="pendant-bulb"></div></div>
-      <div class="pendant-glow"></div>
-    </div>
-    <div class="pendant pendant-2">
-      <div class="pendant-cord"></div>
-      <div class="pendant-shade"><div class="pendant-bulb"></div></div>
-      <div class="pendant-glow"></div>
-    </div>
-    <div class="pendant pendant-3">
-      <div class="pendant-cord"></div>
-      <div class="pendant-shade"><div class="pendant-bulb"></div></div>
-      <div class="pendant-glow"></div>
-    </div>
-
-    <!-- ========== GREEN DOOR FRAME + CURTAIN (left wall) ========== -->
-    <div class="green-door">
-      <div class="door-frame-left"></div>
-      <div class="door-frame-top"></div>
-      <div class="door-frame-right"></div>
-      <div class="door-curtain">
-        <div class="curtain-stripe c1"></div>
-        <div class="curtain-stripe c2"></div>
-        <div class="curtain-stripe c3"></div>
-        <div class="curtain-stripe c4"></div>
-      </div>
-    </div>
-
-    <!-- ========== FIREPLACE (right wall) ========== -->
-    <div class="fireplace">
-      <div class="fp-mantel">
-        <div class="fp-mantel-deco fp-mantel-deco-1"></div>
-        <div class="fp-mantel-deco fp-mantel-deco-2"></div>
-        <div class="fp-mantel-lamp"></div>
-      </div>
-      <div class="fp-surround">
-        <div class="fp-bricks">
-          <div class="fp-fire">
-            <div class="fp-flame fp-flame-1"></div>
-            <div class="fp-flame fp-flame-2"></div>
-            <div class="fp-flame fp-flame-3"></div>
-            <div class="fp-log"></div>
-          </div>
-          <div class="fp-fire-glow"></div>
-        </div>
-      </div>
-      <div class="fp-hearth"></div>
-    </div>
-
-    <!-- ========== GUITAR (right corner) ========== -->
-    <div class="guitar">
-      <div class="guitar-body"></div>
-      <div class="guitar-neck"></div>
-      <div class="guitar-head"></div>
-    </div>
-
-    <!-- ========== RED BENCH (right, by fireplace) ========== -->
-    <div class="red-bench">
-      <div class="rb-back"></div>
-      <div class="rb-seat"></div>
-      <div class="rb-leg rb-leg-1"></div>
-      <div class="rb-leg rb-leg-2"></div>
-    </div>
-
-    <!-- ========== MIC STAND (right) ========== -->
-    <div class="mic-stand">
-      <div class="mic-pole"></div>
-      <div class="mic-base"></div>
-      <div class="mic-head"></div>
-    </div>
-
-    <!-- ========== BAR AREA (left side) ========== -->
-    <div class="bar-area">
-      <!-- Track lights -->
-      <div class="track-light">
-        <div class="track-rail"></div>
-        <div class="track-bulb track-bulb-1"></div>
-        <div class="track-bulb track-bulb-2"></div>
-        <div class="track-bulb track-bulb-3"></div>
-      </div>
-
-      <!-- Shelves behind bar -->
-      <div class="bar-shelves">
-        <div class="shelf shelf-1">
-          <div class="shelf-item si-bottle"></div>
-          <div class="shelf-item si-jar"></div>
-          <div class="shelf-item si-cup"></div>
-          <div class="shelf-item si-bottle-2"></div>
-        </div>
-        <div class="shelf shelf-2">
-          <div class="shelf-item si-cup-2"></div>
-          <div class="shelf-item si-cup-3"></div>
-          <div class="shelf-item si-jar-2"></div>
-        </div>
-      </div>
-
-      <!-- Counter -->
-      <div class="bar-counter">
-        <div class="counter-top"></div>
-        <div class="counter-front">
-          <div class="counter-panel cp-1"></div>
-          <div class="counter-panel cp-2"></div>
-          <div class="counter-panel cp-3"></div>
-        </div>
-        <!-- Food on counter -->
-        <div class="counter-cake counter-cake-pink"></div>
-        <div class="counter-cake counter-cake-choc"></div>
-        <div class="counter-plate"></div>
-        <div class="counter-cup-sm"></div>
-      </div>
-    </div>
-
-    <!-- ========== RUG ========== -->
-    <div class="rug">
-      <div class="rug-inner">
-        <div class="rug-pattern rp-1"></div>
-        <div class="rug-pattern rp-2"></div>
-      </div>
-    </div>
-
-    <!-- ========== SOFA (center, facing viewer) ========== -->
-    <div class="sofa-container">
-      <!-- Sofa -->
-      <div class="sofa">
-        <div class="sofa-back"></div>
-        <div class="sofa-seat">
-          <div class="sofa-cushion sofa-cush-1"></div>
-          <div class="sofa-cushion sofa-cush-2"></div>
-        </div>
-        <div class="sofa-arm sofa-arm-l"></div>
-        <div class="sofa-arm sofa-arm-r"></div>
-      </div>
-
-      <!-- Characters sitting on sofa -->
-      <div class="chars-on-sofa">
-        <div class="char-slot" data-character="ross">
-          <div class="char-head char-head-ross"></div>
-          <div class="char-body"></div>
-          <span class="char-name">Ross</span>
-          <div class="speech-bubble bubble-top" data-character="ross"><span class="bubble-text"></span></div>
-        </div>
-        <div class="char-slot" data-character="rachel">
-          <div class="char-head char-head-rachel"></div>
-          <div class="char-body"></div>
-          <span class="char-name">Rachel</span>
-          <div class="speech-bubble bubble-top" data-character="rachel"><span class="bubble-text"></span></div>
-        </div>
-        <div class="char-slot" data-character="monica">
-          <div class="char-head char-head-monica"></div>
-          <div class="char-body"></div>
-          <span class="char-name">Monica</span>
-          <div class="speech-bubble bubble-top" data-character="monica"><span class="bubble-text"></span></div>
-        </div>
-        <div class="char-slot" data-character="chandler">
-          <div class="char-head char-head-chandler"></div>
-          <div class="char-body"></div>
-          <span class="char-name">Chandler</span>
-          <div class="speech-bubble bubble-top" data-character="chandler"><span class="bubble-text"></span></div>
-        </div>
-        <div class="char-slot" data-character="joey">
-          <div class="char-head char-head-joey"></div>
-          <div class="char-body"></div>
-          <span class="char-name">Joey</span>
-          <div class="speech-bubble bubble-top" data-character="joey"><span class="bubble-text"></span></div>
-        </div>
-        <div class="char-slot" data-character="phoebe">
-          <div class="char-head char-head-phoebe"></div>
-          <div class="char-body"></div>
-          <span class="char-name">Phoebe</span>
-          <div class="speech-bubble bubble-top" data-character="phoebe"><span class="bubble-text"></span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========== COFFEE TABLE (in front of sofa) ========== -->
-    <div class="coffee-table">
-      <div class="ct-top"></div>
-      <div class="ct-leg ct-leg-1"></div>
-      <div class="ct-leg ct-leg-2"></div>
-      <div class="ct-leg ct-leg-3"></div>
-      <div class="ct-leg ct-leg-4"></div>
-      <!-- Coffee cups -->
-      <div class="ct-cup ct-cup-green">
-        <div class="cup-green-body"><div class="cup-green-handle"></div></div>
-        <div class="ct-saucer ct-saucer-green"></div>
-      </div>
-      <div class="ct-cup ct-cup-blue">
-        <div class="cup-blue-body"><div class="cup-blue-handle"></div></div>
-        <div class="ct-saucer ct-saucer-blue"></div>
-      </div>
-      <!-- Steam -->
-      <div class="steam-group" id="coffee-cup">
-        <div class="steam-wisp steam-wisp-1"></div>
-        <div class="steam-wisp steam-wisp-2"></div>
-        <div class="steam-wisp steam-wisp-3"></div>
-      </div>
-    </div>
-
-    <!-- ========== FLOOR ========== -->
-    <div class="floor"></div>
-
-    <!-- ========== AMBIENT OVERLAYS ========== -->
-    <div class="ambient-warmth"></div>
+    <!-- Pixel CRT / Retro Scanline Overlay (Toggleable) -->
+    <div id="pixel-overlay" class="pixel-overlay"></div>
     <div class="vignette"></div>
+    <div id="shutter-flash" class="shutter-flash hidden"></div>
 
-    <!-- ========== CONTROLS ========== -->
-    <div class="controls">
-      <div class="ctrl-btn" id="time-toggle" title="切换时间">
-        <span class="ctrl-icon">☀️</span>
+    <!-- 3D Floating Speech Bubbles & Crowd Reaction Emotes Layer -->
+    <div id="bubbles-layer" class="bubbles-layer"></div>
+
+    <!-- 3D Character Name Tags & Activity Status Layer -->
+    <div id="labels-layer" class="labels-layer"></div>
+
+    <!-- ==================== TOP LEFT BRAND & LIVE TICKER ==================== -->
+    <div class="hud-top-left">
+      <div class="hud-brand-row">
+        <div class="brand-badge" id="brand-badge">
+          <span class="brand-dot" id="brand-dot"></span>
+          <span class="brand-title" id="brand-title">CENTRAL PERK</span>
+          <span class="brand-sub" id="brand-sub">ISOMETRIC VOXEL</span>
+        </div>
+        <button class="scene-switch-btn" id="scene-switch-btn" title="一键旋转切换 3D 场景：Central Perk 咖啡馆 ↔ 4楼双公寓 (Joey 19号 & Monica 20号)">
+          <span class="scene-switch-icon" id="scene-switch-icon">🏢</span>
+          <span class="scene-switch-text" id="scene-switch-text">去 4楼双公寓</span>
+        </button>
       </div>
-      <button class="ctrl-btn" id="search-btn" title="搜索">
+      <div class="chat-ticker" id="chat-ticker" title="点击查看当前对话详情与查词">
+        <span class="ticker-tag" id="ticker-speaker">Ross</span>
+        <span class="ticker-line" id="ticker-text">"We were on a break!"</span>
+      </div>
+    </div>
+
+    <!-- ==================== TOP RIGHT CONTROLS ==================== -->
+    <div class="controls">
+      <button class="ctrl-btn" id="sound-toggle" title="开启/静音 场景环境音乐、角色英文配音与微缩交互音效">
+        <span class="ctrl-icon" id="sound-icon">🔊</span>
+      </button>
+      <button class="ctrl-btn" id="polaroid-btn" title="拍立得打卡：拍摄当前唯美 3D 微缩瞬间并导出拍立得卡片">
+        <span class="ctrl-icon" id="polaroid-icon">📸</span>
+      </button>
+      <button class="ctrl-btn" id="pixel-toggle" title="切换像素颗粒感 (精细体素 / 8-Bit 复古像素)">
+        <span class="ctrl-icon" id="pixel-icon">👾</span>
+      </button>
+      <button class="ctrl-btn" id="time-toggle" title="切换氛围背景 (微缩纯白画布 / 暖阳午后 / 黄昏 / 深夜暖灯)">
+        <span class="ctrl-icon" id="time-icon">🎨</span>
+      </button>
+      <button class="ctrl-btn" id="ref-btn" title="对比实物微缩模型照片">
+        <span class="ctrl-icon">🖼️</span>
+      </button>
+      <button class="ctrl-btn" id="search-btn" title="搜索台词 (支持季/集筛选)">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
       </button>
-      <button class="ctrl-btn" id="vocab-btn" title="生词本">
+      <button class="ctrl-btn" id="vocab-btn" title="我的生词本">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
         </svg>
+        <span id="vocab-badge" class="vocab-badge hidden">0</span>
       </button>
     </div>
 
-    <!-- ========== BIG QUOTE ========== -->
+    <!-- ==================== RIGHT SIDE ZOOM SLIDER (远观微缩岛 <-> 近看人物) ==================== -->
+    <div class="zoom-dock">
+      <button class="zoom-step-btn" id="zoom-in-btn" title="放大看人物细节">➕</button>
+      <div class="zoom-slider-wrap">
+        <input id="zoom-slider" type="range" min="15" max="100" value="42" class="zoom-slider" title="拖动缩放：微缩岛全景 ↔ 人物特写">
+      </div>
+      <button class="zoom-step-btn" id="zoom-out-btn" title="缩小看微缩模型整体">➖</button>
+      <span class="zoom-label" id="zoom-label">微缩全景</span>
+    </div>
+
+    <!-- ==================== BOTTOM INTERACTIVE DIRECTOR & CAMERA BAR (COLLAPSIBLE CAPSULE DOCK) ==================== -->
+    <div class="hud-bottom" id="hud-bottom">
+      <!-- Expandable Popover Drawers (Hidden by default until a tab is clicked) -->
+      <div class="dock-drawers" id="dock-drawers">
+        <!-- Drawer 1: Interactive Topic & Action Triggers -->
+        <div class="topic-bar dock-panel hidden" id="dock-panel-topic" data-panel="topic">
+          <span class="topic-bar-label" id="topic-bar-label">🎬 咖啡馆小剧场:</span>
+          <div class="director-chips">
+            <button class="topic-chip" data-scenario="break">💔 争论“冷静期”</button>
+            <button class="topic-chip" data-scenario="smellycat">🎸 Phoebe 唱臭臭猫</button>
+            <button class="topic-chip" data-scenario="food">🍰 Joey 吧台盯蛋糕</button>
+            <button class="topic-chip" data-scenario="coffee_run">☕ Rachel 吧台端咖啡</button>
+            <button class="topic-chip" data-scenario="pivot">🛋️ PIVOT 搬沙发</button>
+            <button class="topic-chip" data-scenario="lobster">🦞 龙虾灵魂伴侣</button>
+          </div>
+          <form id="custom-topic-form" class="custom-topic-form">
+            <input id="custom-topic-input" type="text" placeholder="输入英文/中文向老友搭话..." autocomplete="off">
+            <button type="submit">发送</button>
+          </form>
+        </div>
+
+        <!-- Drawer 2 & 3: Camera View Presets & Character Selector -->
+        <div class="bottom-nav-row">
+          <div class="cam-bar dock-panel hidden" id="dock-panel-cam" data-panel="cam">
+            <button class="cam-btn active" data-cam="island">🏝️ 远观微缩岛</button>
+            <button class="cam-btn" data-cam="overview">☕ 咖啡馆中景</button>
+            <button class="cam-btn" data-cam="couch">🛋️ 橘色沙发六人组</button>
+            <button class="cam-btn" data-cam="bar">☕ 吧台特写</button>
+            <button class="cam-btn" data-cam="stage">🎸 演出角特写</button>
+          </div>
+
+          <div class="char-bar dock-panel hidden" id="dock-panel-char" data-panel="char">
+            <button class="char-pill" data-char="rachel"><span class="dot" style="background:#E8739A"></span>Rachel</button>
+            <button class="char-pill" data-char="monica"><span class="dot" style="background:#F5A623"></span>Monica</button>
+            <button class="char-pill" data-char="chandler"><span class="dot" style="background:#8E6FD4"></span>Chandler</button>
+            <button class="char-pill" data-char="ross"><span class="dot" style="background:#4A90D9"></span>Ross</button>
+            <button class="char-pill" data-char="joey"><span class="dot" style="background:#E85D5D"></span>Joey</button>
+            <button class="char-pill" data-char="phoebe"><span class="dot" style="background:#5EBF8D"></span>Phoebe</button>
+            <button class="char-pill" data-char="gunther"><span class="dot" style="background:#D4AF37"></span>Gunther</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sleek Minimalist Capsule Launcher Bar -->
+      <div class="dock-capsule" id="dock-capsule">
+        <button class="dock-tab-btn" data-dock-tab="topic" title="展开/收起 名场面小剧场与自由搭话">
+          <span>🎬</span>
+          <span>小剧场导演</span>
+        </button>
+        <span class="dock-divider"></span>
+        <button class="dock-tab-btn" data-dock-tab="cam" title="展开/收起 镜头机位切换">
+          <span>🎥</span>
+          <span>镜头机位</span>
+        </button>
+        <span class="dock-divider"></span>
+        <button class="dock-tab-btn" data-dock-tab="char" title="展开/收起 老友角色特写追踪">
+          <span>👥</span>
+          <span>聚焦老友</span>
+        </button>
+        <span class="dock-divider"></span>
+        <button class="dock-tab-btn dock-all-btn" id="dock-toggle-all" title="一键展开全部功能面板或全部收起">
+          <span id="dock-toggle-icon">▴</span>
+          <span id="dock-toggle-text">全部展开</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== INTERACTIVE DIALOGUE & WORD CARD ==================== -->
     <div id="big-quote" class="big-quote hidden">
       <div class="big-quote-card">
-        <span class="bq-char"></span>
-        <p class="bq-text"></p>
-        <button id="big-quote-close" class="bq-close">×</button>
+        <div class="bq-header">
+          <div class="flex items-center gap-2">
+            <span class="bq-char">Ross</span>
+            <span class="bq-ep" id="bq-ep">S03E02 · 00:04:23</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="bq-speak" class="bq-action-btn" title="朗读当前英文台词">🔊 朗读台词</button>
+            <button id="bq-replay" class="bq-action-btn" title="在3D场景中重播这段对话">▶️ 场景重演</button>
+            <button id="big-quote-close" class="bq-close">×</button>
+          </div>
+        </div>
+
+        <!-- Context Before -->
+        <div id="bq-context-before" class="bq-context"></div>
+
+        <!-- Main Clickable Quote -->
+        <div class="bq-main-box">
+          <p class="bq-text" id="bq-text"></p>
+          <p class="bq-trans" id="bq-trans"></p>
+          <div class="bq-hint">💡 点击上方任意英文单词即可发音、查看释义并加入生词本</div>
+        </div>
+
+        <!-- Word Lookup Popover inside Card -->
+        <div id="word-lookup-box" class="word-lookup-box hidden">
+          <div class="flex items-center justify-between">
+            <div>
+              <span id="wl-word" class="wl-word">break</span>
+              <span id="wl-phonetic" class="wl-phonetic">/breɪk/</span>
+              <button id="wl-speak-btn" class="text-xs px-1.5 py-0.5 rounded bg-amber-200/70 hover:bg-amber-300 text-amber-900 font-bold ml-1" title="朗读单词发音">🔊</button>
+              <span id="wl-meaning" class="wl-meaning">n. 休息；暂停；分手冷静期</span>
+            </div>
+            <button id="wl-add-btn" class="wl-add-btn">+ 加入生词本</button>
+          </div>
+        </div>
+
+        <!-- Context After -->
+        <div id="bq-context-after" class="bq-context"></div>
       </div>
     </div>
 
   </div>
 
-  <!-- ========== SEARCH PANEL ========== -->
+  <!-- ==================== SEARCH PANEL ==================== -->
   <div id="search-overlay" class="panel-overlay hidden">
     <div class="panel-inner">
-      <div class="flex items-center justify-between mb-5">
-        <h2 class="text-lg font-bold text-gray-800">🔍 搜索台词</h2>
-        <button id="search-close" class="text-gray-400 hover:text-gray-700 text-2xl">×</button>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold text-amber-950 flex items-center gap-2">🔍 搜索老友记台词</h2>
+        <button id="search-close" class="text-gray-400 hover:text-gray-700 text-2xl leading-none">×</button>
       </div>
-      <input id="search-input" type="text" placeholder="搜索台词..." class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-400 focus:outline-none text-gray-800" autocomplete="off">
-      <div class="flex flex-wrap gap-2 mt-3" id="hot-searches"></div>
-      <div class="flex gap-3 mt-3">
-        <select id="season-filter" class="flex-1 px-3 py-2 rounded-full border border-gray-200 text-sm text-gray-700"><option value="">全部季</option></select>
-        <select id="episode-filter" class="flex-1 px-3 py-2 rounded-full border border-gray-200 text-sm text-gray-700"><option value="">全部集</option></select>
+      <input id="search-input" type="text" placeholder="输入关键词，例如 break / lobster / pivot / coffee..." class="w-full px-4 py-2.5 rounded-xl border-2 border-amber-200 focus:border-amber-500 focus:outline-none text-gray-800 text-sm" autocomplete="off">
+      <div class="flex flex-wrap gap-1.5 mt-3" id="hot-searches"></div>
+      <div class="flex gap-2 mt-3">
+        <select id="season-filter" class="flex-1 px-3 py-2 rounded-lg border border-amber-200 text-sm text-gray-700 bg-white"><option value="">全部季 (Season)</option></select>
+        <select id="episode-filter" class="flex-1 px-3 py-2 rounded-lg border border-amber-200 text-sm text-gray-700 bg-white"><option value="">全部集 (Episode)</option></select>
       </div>
-      <div id="results-count" class="mt-3 text-sm text-gray-500 hidden"></div>
-      <div id="search-results" class="mt-3 space-y-2 max-h-80 overflow-y-auto custom-scrollbar"></div>
-      <div id="search-empty" class="text-center py-8 text-gray-400 hidden">没有找到匹配的台词</div>
+      <div id="results-count" class="mt-3 text-xs font-semibold text-amber-700 hidden"></div>
+      <div id="search-results" class="mt-2 space-y-2 max-h-72 overflow-y-auto custom-scrollbar"></div>
+      <div id="search-empty" class="text-center py-8 text-gray-400 text-sm hidden">没有找到匹配的台词 ☕</div>
     </div>
   </div>
 
-  <!-- ========== VOCAB PANEL ========== -->
+  <!-- ==================== VOCAB PANEL ==================== -->
   <div id="vocab-overlay" class="panel-overlay hidden">
     <div class="panel-inner">
-      <div class="flex items-center justify-between mb-5">
-        <h2 class="text-lg font-bold text-gray-800">📖 我的生词本</h2>
-        <button id="vocab-close" class="text-gray-400 hover:text-gray-700 text-2xl">×</button>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold text-amber-950">📖 Central Perk 生词本</h2>
+        <button id="vocab-close" class="text-gray-400 hover:text-gray-700 text-2xl leading-none">×</button>
       </div>
       <div id="vocab-list" class="space-y-2 max-h-80 overflow-y-auto custom-scrollbar">
-        <p class="text-sm text-gray-400 text-center py-8">还没有添加生词 👀</p>
+        <p class="text-sm text-gray-400 text-center py-8">还没有添加生词 👀<br><span class="text-xs">点击场景中的角色或气泡，再点英文单词即可收藏</span></p>
       </div>
-      <button id="vocab-clear" class="mt-4 w-full py-2 text-sm text-red-400 border border-red-200 rounded-full hover:bg-red-50">清空全部生词</button>
+      <button id="vocab-clear" class="mt-4 w-full py-2 text-xs font-semibold text-red-500 border border-red-200 rounded-xl hover:bg-red-50 transition">清空全部生词</button>
     </div>
   </div>
 
-  <div id="panel-overlay" class="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 hidden"></div>
+  <!-- ==================== REFERENCE MODEL PHOTO MODAL ==================== -->
+  <div id="ref-overlay" class="panel-overlay hidden">
+    <div class="panel-inner max-w-2xl">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-base font-bold text-amber-950">🏠 原型微缩模型实拍图对比 (Joey's Apt, Monica's Apt & Central Perk)</h2>
+        <button id="ref-close" class="text-gray-400 hover:text-gray-700 text-2xl leading-none">×</button>
+      </div>
+      <p class="text-xs text-amber-800 mb-3">当前 3D 微缩岛严格按照实物 DIY 微缩模型的空间结构与软装细节 1:1 体素级还原：</p>
+      <div class="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto custom-scrollbar pr-1">
+        <div class="col-span-2 rounded-xl overflow-hidden border-2 border-amber-500 bg-black">
+          <img src="assets/voxel_friends_floorplan.png" alt="4楼完整对门双公寓架构概念图" class="w-full h-48 object-cover">
+          <div class="text-center text-xs text-amber-200 py-1.5 bg-amber-950/95 font-semibold">📐 4楼对门双公寓空间结构概念蓝图 (Monica 20号 ⇋ 走廊 ⇋ Joey 19号)</div>
+        </div>
+        <div class="rounded-xl overflow-hidden border-2 border-emerald-400 bg-black">
+          <img src="assets/joey_apt_front.jpg" alt="Joey 公寓模型正视俯瞰图" class="w-full h-40 object-cover">
+          <div class="text-center text-xs text-emerald-100 py-1.5 bg-emerald-950/90">🐥 Joey 家 (19号) · 正视暖光</div>
+        </div>
+        <div class="rounded-xl overflow-hidden border-2 border-emerald-400 bg-black">
+          <img src="assets/joey_apt_top.jpg" alt="Joey 公寓模型俯视全景图" class="w-full h-40 object-cover">
+          <div class="text-center text-xs text-emerald-100 py-1.5 bg-emerald-950/90">🐥 Joey 家 (19号) · 俯视全景</div>
+        </div>
+        <div class="rounded-xl overflow-hidden border-2 border-purple-300 bg-black">
+          <img src="assets/monica_apt_top.jpg" alt="Monica 公寓模型俯视图" class="w-full h-40 object-cover">
+          <div class="text-center text-xs text-purple-100 py-1.5 bg-purple-950/90">🚪 Monica 家 (20号) · 俯视全景</div>
+        </div>
+        <div class="rounded-xl overflow-hidden border-2 border-purple-300 bg-black">
+          <img src="assets/monica_apt_front.jpg" alt="Monica 公寓模型正视暖光图" class="w-full h-40 object-cover">
+          <div class="text-center text-xs text-purple-100 py-1.5 bg-purple-950/90">🚪 Monica 家 (20号) · 暖灯正视</div>
+        </div>
+        <div class="rounded-xl overflow-hidden border-2 border-amber-200 bg-black">
+          <img src="assets/IMG_2976.jpg" alt="Central Perk 模型俯视图" class="w-full h-40 object-cover">
+          <div class="text-center text-xs text-amber-100 py-1.5 bg-amber-950/90">☕ Central Perk · 俯视全景</div>
+        </div>
+        <div class="rounded-xl overflow-hidden border-2 border-amber-200 bg-black">
+          <img src="assets/IMG_2977.jpg" alt="Central Perk 模型正视图" class="w-full h-40 object-cover">
+          <div class="text-center text-xs text-amber-100 py-1.5 bg-amber-950/90">☕ Central Perk · 正视细节</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== POLAROID SNAPSHOT MODAL ==================== -->
+  <div id="polaroid-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none hidden">
+    <div class="polaroid-modal-inner">
+      <div class="flex items-center justify-between w-full mb-3 pb-2 border-b border-amber-900/15">
+        <div class="flex items-center gap-2">
+          <span class="text-base">📸</span>
+          <span class="text-xs font-bold tracking-wider text-amber-950 uppercase" style="font-family: 'Press Start 2P', monospace; font-size: 9px;">POLAROID MEMORY</span>
+        </div>
+        <button id="polaroid-close" class="text-stone-500 hover:text-stone-900 font-black text-xl leading-none px-2">&times;</button>
+      </div>
+      
+      <div class="polaroid-card" id="polaroid-card">
+        <div class="polaroid-photo-frame">
+          <img id="polaroid-img" class="polaroid-photo" alt="3D Snapshot">
+          <div class="polaroid-badge-seal" id="polaroid-seal">CENTRAL PERK</div>
+        </div>
+        <div class="polaroid-bottom">
+          <div class="polaroid-quote" id="polaroid-quote">"I'll be there for you..."</div>
+          <div class="polaroid-trans" id="polaroid-trans">因为你也是这样陪着我</div>
+          <div class="polaroid-footer">
+            <span class="polaroid-stamp" id="polaroid-stamp">NYC · MANHATTAN · 1994</span>
+            <span class="polaroid-series">FRIENDS</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="polaroid-btn-bar">
+        <button id="polaroid-download" class="polaroid-btn-save">
+          💾 保存拍立得卡片 (PNG)
+        </button>
+        <button id="polaroid-retake" class="polaroid-btn-retake">
+          再拍一张
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-overlay" class="fixed inset-0 bg-black/45 backdrop-blur-sm z-40 hidden"></div>
   <div class="flash-msg"></div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=20261030_vox_fix"></script>
 </body>
 </html>
