@@ -1201,3 +1201,527 @@ html, body {
   background: #d5b895;
   border-radius: 4px;
 }
+
+/* ==================== CLEAN SCREEN MODE (清屏沉浸观赏) ==================== */
+body.clean-screen-mode .hud-top-left,
+body.clean-screen-mode .controls,
+body.clean-screen-mode .zoom-dock,
+body.clean-screen-mode .hud-bottom,
+body.clean-screen-mode .bubbles-layer,
+body.clean-screen-mode .labels-layer,
+body.clean-screen-mode .big-quote,
+body.clean-screen-mode .tour-modal,
+body.clean-screen-mode .polaroid-modal,
+body.clean-screen-mode .vocab-modal,
+body.clean-screen-mode .ref-modal,
+body.clean-screen-mode .search-panel {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(8px);
+  transition: opacity 0.35s ease, transform 0.35s ease !important;
+}
+
+.clean-screen-toast {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  background: rgba(26, 16, 11, 0.76);
+  border: 1.5px solid rgba(255, 212, 160, 0.3);
+  color: #ffdfb3;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.3s ease, transform 0.2s ease;
+  user-select: none;
+}
+
+.clean-screen-toast:hover {
+  opacity: 1;
+  transform: translateX(-50%) scale(1.02);
+  background: rgba(45, 27, 18, 0.95);
+}
+
+.clean-screen-toast.hidden,
+.rec-bar.hidden,
+.tour-hud.hidden,
+.tour-modal.hidden,
+.video-modal.hidden {
+  display: none !important;
+}
+
+/* ==================== FLOATING REC INDICATOR & CONTROLLER BAR ==================== */
+.rec-bar {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(20, 12, 8, 0.90);
+  border: 1.5px solid rgba(232, 93, 93, 0.65);
+  padding: 8px 18px;
+  border-radius: 28px;
+  box-shadow: 0 6px 24px rgba(232, 93, 93, 0.25), 0 2px 8px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  animation: recGlow 2s infinite ease-in-out;
+}
+
+@keyframes recGlow {
+  0%, 100% { border-color: rgba(232, 93, 93, 0.6); box-shadow: 0 6px 24px rgba(232, 93, 93, 0.25); }
+  50% { border-color: rgba(255, 60, 60, 0.95); box-shadow: 0 6px 28px rgba(255, 60, 60, 0.45); }
+}
+
+.rec-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff3b30;
+  box-shadow: 0 0 10px #ff3b30;
+  animation: recBlink 1s infinite;
+}
+
+@keyframes recBlink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.85); }
+}
+
+.rec-label {
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #ff3b30;
+}
+
+.rec-timer {
+  font-family: 'Press Start 2P', monospace, sans-serif;
+  font-size: 11px;
+  color: #fff;
+  min-width: 48px;
+}
+
+.rec-audio-tag {
+  font-size: 11px;
+  color: #ffdfb3;
+  opacity: 0.85;
+}
+
+.rec-btn {
+  padding: 4px 12px;
+  border-radius: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+.rec-btn-stop {
+  background: #d96b27;
+  color: #fff;
+}
+
+.rec-btn-stop:hover {
+  background: #ea7c38;
+  transform: scale(1.04);
+}
+
+.rec-btn-cancel {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffdfb3;
+}
+
+.rec-btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* ==================== FLOATING CINEMATIC TOUR CONTROLLER HUD ==================== */
+.tour-hud {
+  position: fixed;
+  bottom: 82px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9990;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(26, 16, 11, 0.92);
+  border: 2px solid #3d2314;
+  padding: 10px 20px;
+  border-radius: 28px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(12px);
+  color: #ffdfb3;
+  min-width: 380px;
+  max-width: 90vw;
+  transition: all 0.3s ease;
+}
+
+.tour-hud-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+}
+
+.tour-hud-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tour-hud-time {
+  font-size: 10px;
+  color: #c4a482;
+  font-family: monospace;
+}
+
+.tour-hud-progress-wrap {
+  flex: 1;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+  overflow: hidden;
+  min-width: 90px;
+}
+
+.tour-hud-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #d96b27, #f5a623);
+  border-radius: 3px;
+  transition: width 0.1s linear;
+}
+
+.tour-hud-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tour-hud-btn {
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffdfb3;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tour-hud-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+.tour-hud-stop {
+  background: rgba(232, 93, 93, 0.25);
+  border-color: rgba(232, 93, 93, 0.45);
+  color: #ff9999;
+}
+
+.tour-hud-stop:hover {
+  background: rgba(232, 93, 93, 0.5);
+  color: #fff;
+}
+
+/* ==================== TOUR & RECORDING MODALS ==================== */
+.tour-modal, .video-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(14, 9, 6, 0.72);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.tour-modal-card {
+  width: 100%;
+  max-width: 620px;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: #fdfaf4;
+  border: 2px solid #261710;
+  border-radius: 16px;
+  box-shadow: 6px 6px 0 rgba(38, 23, 16, 0.4);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: #261710;
+}
+
+.tour-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #efe4d3;
+  padding-bottom: 12px;
+}
+
+.tour-modal-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #261710;
+}
+
+.tour-modal-sub {
+  font-size: 11.5px;
+  color: #8c6d58;
+  margin-top: 2px;
+}
+
+.tour-modal-close, .video-modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1.5px solid #261710;
+  background: #f4ede3;
+  color: #261710;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.tour-modal-close:hover, .video-modal-close:hover {
+  background: #e85d5d;
+  color: #fff;
+}
+
+.tour-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tour-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.tour-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.tour-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #ffffff;
+  border: 1.5px solid #dfd1be;
+  border-radius: 12px;
+  transition: all 0.18s ease;
+  cursor: pointer;
+}
+
+.tour-card:hover {
+  border-color: #d96b27;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 14px rgba(217, 107, 39, 0.12);
+}
+
+.tour-card-badge {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: #fef0e3;
+  color: #d96b27;
+  border: 1px solid #fed2ab;
+}
+
+.tour-card-icon {
+  font-size: 26px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #f8f1e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tour-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.tour-card-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #261710;
+}
+
+.tour-card-desc {
+  font-size: 11px;
+  color: #725744;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+.tour-card-meta {
+  font-size: 10px;
+  color: #a08168;
+  margin-top: 4px;
+}
+
+.tour-play-btn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: #d96b27;
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 700;
+  border: 1.5px solid #261710;
+  box-shadow: 2px 2px 0 #261710;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.tour-play-btn:hover {
+  background: #ea7c38;
+  transform: translateY(-1px);
+}
+
+.tour-record-section {
+  background: #f7eee1;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1.5px solid #dfd1be;
+}
+
+.tour-options-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tour-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #3d2314;
+  cursor: pointer;
+}
+
+.tour-checkbox-label input {
+  accent-color: #d96b27;
+  width: 16px;
+  height: 16px;
+}
+
+.tour-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.tour-action-main-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: #d96b27;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1.5px solid #261710;
+  box-shadow: 2px 2px 0 #261710;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tour-action-main-btn:hover {
+  background: #ea7c38;
+  transform: translateY(-1px);
+}
+
+.tour-action-sub-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #261710;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid #261710;
+  box-shadow: 2px 2px 0 rgba(38, 23, 16, 0.2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.tour-action-sub-btn:hover {
+  background: #f4ede3;
+  transform: translateY(-1px);
+}
+
+/* Video Preview Modal Card */
+.video-modal-card {
+  width: 100%;
+  max-width: 580px;
+  background: #fdfaf4;
+  border: 2px solid #261710;
+  border-radius: 16px;
+  box-shadow: 6px 6px 0 rgba(38, 23, 16, 0.4);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.video-preview-wrap {
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #110a07;
+  border: 1.5px solid #261710;
+  max-height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-preview {
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+}
+
+.video-modal-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+

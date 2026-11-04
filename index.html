@@ -55,6 +55,15 @@
       <button class="ctrl-btn" id="sound-toggle" title="开启/静音 场景环境音乐、角色英文配音与微缩交互音效">
         <span class="ctrl-icon" id="sound-icon">🔊</span>
       </button>
+      <button class="ctrl-btn" id="tour-btn" title="电影级运镜导览 (360°微缩环绕 / Central Perk经典漫游 / 4楼双公寓穿梭)">
+        <span class="ctrl-icon" id="tour-icon">🎬</span>
+      </button>
+      <button class="ctrl-btn" id="record-btn" title="录屏记录 (一键录制60FPS超清视频分享至社交媒体)">
+        <span class="ctrl-icon" id="record-icon">⏺️</span>
+      </button>
+      <button class="ctrl-btn" id="clean-screen-btn" title="清屏沉浸模式 (隐藏全部UI纯享3D微缩，快捷键 H)">
+        <span class="ctrl-icon" id="clean-screen-icon">🔲</span>
+      </button>
       <button class="ctrl-btn" id="polaroid-btn" title="拍立得打卡：拍摄当前唯美 3D 微缩瞬间并导出拍立得卡片">
         <span class="ctrl-icon" id="polaroid-icon">📸</span>
       </button>
@@ -119,6 +128,7 @@
             <button class="cam-btn" data-cam="couch">🛋️ 橘色沙发六人组</button>
             <button class="cam-btn" data-cam="bar">☕ 吧台特写</button>
             <button class="cam-btn" data-cam="stage">🎸 演出角特写</button>
+            <button class="cam-btn tour-trigger-chip" id="dock-tour-btn" title="打开电影级运镜与录制面板" style="background: rgba(217, 107, 39, 0.22); border-color: #d96b27; color: #ffdfb3;">🎬 运镜漫游与录屏...</button>
           </div>
 
           <div class="char-bar dock-panel hidden" id="dock-panel-char" data-panel="char">
@@ -309,6 +319,169 @@
         <button id="polaroid-retake" class="polaroid-btn-retake">
           再拍一张
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CLEAN SCREEN MODE EXIT TOAST ==================== -->
+  <div id="clean-screen-toast" class="clean-screen-toast hidden" title="点击或按 H 键恢复界面">
+    <span>🔲 清屏模式中 · 按 <strong>H</strong> 键或点击此处恢复界面</span>
+  </div>
+
+  <!-- ==================== FLOATING REC INDICATOR & CONTROLLER BAR ==================== -->
+  <div id="rec-bar" class="rec-bar hidden">
+    <div class="rec-dot"></div>
+    <span class="rec-label">REC</span>
+    <span class="rec-timer" id="rec-timer">00:00</span>
+    <span class="rec-audio-tag" id="rec-audio-tag">🎵 原声音频</span>
+    <button class="rec-btn rec-btn-stop" id="rec-stop-btn" title="停止录制并保存高清视频">⏹️ 完成保存</button>
+    <button class="rec-btn rec-btn-cancel" id="rec-cancel-btn" title="放弃本次录制">✕ 取消</button>
+  </div>
+
+  <!-- ==================== FLOATING CINEMATIC TOUR CONTROLLER HUD ==================== -->
+  <div id="tour-hud" class="tour-hud hidden">
+    <div class="tour-hud-info">
+      <div class="flex items-center gap-1.5">
+        <span class="tour-hud-icon">🎬</span>
+        <span class="tour-hud-title" id="tour-hud-title">360° 微缩环绕漫游</span>
+      </div>
+      <span class="tour-hud-time" id="tour-hud-time">00:00 / 00:16</span>
+    </div>
+    <div class="tour-hud-progress-wrap">
+      <div class="tour-hud-progress-bar" id="tour-hud-progress"></div>
+    </div>
+    <div class="tour-hud-actions">
+      <button class="tour-hud-btn" id="tour-pause-btn" title="暂停/继续运镜">⏸️</button>
+      <button class="tour-hud-btn" id="tour-speed-btn" title="切换运镜倍速">1.0x</button>
+      <button class="tour-hud-btn tour-hud-stop" id="tour-stop-btn" title="退出运镜">⏹️ 退出</button>
+    </div>
+  </div>
+
+  <!-- ==================== TOUR & RECORDING MODAL ==================== -->
+  <div id="tour-modal" class="tour-modal hidden">
+    <div class="tour-modal-card">
+      <div class="tour-modal-header">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🎬</span>
+          <div>
+            <h3 class="tour-modal-title">电影级运镜与社交媒体记录</h3>
+            <p class="tour-modal-sub">自动高光运镜编排 · 60FPS 超清视频导出 · 适合小红书/抖音/B站/朋友圈</p>
+          </div>
+        </div>
+        <button class="tour-modal-close" id="tour-modal-close">&times;</button>
+      </div>
+
+      <!-- Section 1: Cinematic Tour Presets -->
+      <div class="tour-section">
+        <div class="tour-section-header">
+          <span class="font-bold text-sm text-[#3d2314]">🎥 选择运镜路线 (Camera Choreography)</span>
+          <span class="text-xs text-[#8c6d58]">点击立即启航 · 支持鼠标自由接管</span>
+        </div>
+        <div class="tour-grid">
+          <!-- Tour 1 -->
+          <div class="tour-card" data-tour="orbit360">
+            <div class="tour-card-badge">推荐全景</div>
+            <div class="tour-card-icon">🏝️</div>
+            <div class="tour-card-content">
+              <div class="tour-card-title">360° 微缩环绕 (Miniature Orbit)</div>
+              <div class="tour-card-desc">平滑围绕老友记微缩景观 360 度优雅环拍，尽览建筑精巧体素与街区全貌</div>
+              <div class="tour-card-meta">⏱️ 约 16 秒 · 双场景通用</div>
+            </div>
+            <button class="tour-play-btn" title="开始此运镜">▶️ 启航</button>
+          </div>
+
+          <!-- Tour 2 -->
+          <div class="tour-card" data-tour="cafeClassic">
+            <div class="tour-card-badge">咖啡馆精选</div>
+            <div class="tour-card-icon">☕</div>
+            <div class="tour-card-content">
+              <div class="tour-card-title">Central Perk 经典剧情漫游</div>
+              <div class="tour-card-desc">高空俯瞰 ➔ 橱窗霓虹LOGO ➔ 橘色沙发六人组 ➔ 吧台浓缩咖啡机 ➔ Phoebe演出角</div>
+              <div class="tour-card-meta">⏱️ 约 24 秒 · Central Perk</div>
+            </div>
+            <button class="tour-play-btn" title="开始此运镜">▶️ 启航</button>
+          </div>
+
+          <!-- Tour 3 -->
+          <div class="tour-card" data-tour="apt4thFloor">
+            <div class="tour-card-badge">公寓精选</div>
+            <div class="tour-card-icon">🏢</div>
+            <div class="tour-card-content">
+              <div class="tour-card-title">4楼双公寓穿梭巡礼 (Apt 19 & 20)</div>
+              <div class="tour-card-desc">四楼连廊 ➔ Monica紫色房门金猫眼框 ➔ 开放式绿色厨房 ➔ Joey双人皮躺椅与桌上足球</div>
+              <div class="tour-card-meta">⏱️ 约 26 秒 · 4楼双公寓</div>
+            </div>
+            <button class="tour-play-btn" title="开始此运镜">▶️ 启航</button>
+          </div>
+
+          <!-- Tour 4 -->
+          <div class="tour-card" data-tour="streetView">
+            <div class="tour-card-badge">氛围特写</div>
+            <div class="tour-card-icon">🚕</div>
+            <div class="tour-card-content">
+              <div class="tour-card-title">纽约街景与窗台特写 (NYC Street & Pigeon)</div>
+              <div class="tour-card-desc">铁艺消防云梯与可爱纽约鸽 ➔ 街头穿行黄色出租车 ➔ 复古路灯与红砖墙立面特写</div>
+              <div class="tour-card-meta">⏱️ 约 18 秒 · 街头美学</div>
+            </div>
+            <button class="tour-play-btn" title="开始此运镜">▶️ 启航</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Recording Controls & Options -->
+      <div class="tour-section tour-record-section">
+        <div class="tour-section-header">
+          <span class="font-bold text-sm text-[#3d2314]">⏺️ 社交媒体记录设置 (Social Media Export)</span>
+        </div>
+        <div class="tour-options-row">
+          <label class="tour-checkbox-label">
+            <input type="checkbox" id="tour-auto-record" checked>
+            <span>运镜时自动同步录制 (运镜结束自动保存完整视频)</span>
+          </label>
+          <label class="tour-checkbox-label">
+            <input type="checkbox" id="tour-auto-clean" checked>
+            <span>录制时自动清屏 (隐藏HUD，获得纯净 3D 电影画面)</span>
+          </label>
+        </div>
+        <div class="tour-btn-row">
+          <button class="tour-action-main-btn" id="modal-start-record-btn">
+            <span>⏺️ 开始自由录屏 (手动录制)</span>
+          </button>
+          <button class="tour-action-sub-btn" id="modal-clean-snap-btn">
+            <span>📸 导出超清无遮挡 PNG 截图</span>
+          </button>
+          <button class="tour-action-sub-btn" id="modal-clean-screen-btn">
+            <span>🔲 一键清屏沉浸模式 (快捷键 H)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VIDEO EXPORT CELEBRATION MODAL ==================== -->
+  <div id="video-modal" class="video-modal hidden">
+    <div class="video-modal-card">
+      <div class="video-modal-header">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🎉</span>
+          <div>
+            <h3 class="font-bold text-base text-[#3d2314]">录屏已完成并开始下载！</h3>
+            <p class="text-xs text-[#8c6d58]">超清 60FPS · 伴随原声爵士配乐与微缩环境音效</p>
+          </div>
+        </div>
+        <button class="video-modal-close" id="video-modal-close">&times;</button>
+      </div>
+      <div class="video-preview-wrap">
+        <video id="video-preview" controls playsinline loop autoplay muted class="video-preview"></video>
+      </div>
+      <div class="video-modal-footer">
+        <div class="text-xs text-[#8c6d58] flex items-center gap-1">
+          <span>💡 提示：视频文件已保存至浏览器“下载”目录，可直接拖入小红书/微信/B站/抖音分享！</span>
+        </div>
+        <div class="flex items-center justify-end gap-2">
+          <button id="video-redownload-btn" class="tour-action-main-btn">⬇️ 重新下载视频</button>
+          <button id="video-close-btn" class="tour-action-sub-btn">完成</button>
+        </div>
       </div>
     </div>
   </div>

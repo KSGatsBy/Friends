@@ -5720,8 +5720,12 @@ function projectTo2D(vec3) {
   };
 }
 
+let lastAnimTimeMs = 0;
+
 function animate(timeMs) {
   requestAnimationFrame(animate);
+  const deltaMs = lastAnimTimeMs ? Math.min(100, timeMs - lastAnimTimeMs) : 16.6;
+  lastAnimTimeMs = timeMs;
   const t = timeMs * 0.001;
 
   // 360° Diorama Spin Transition Animation (Central Perk <-> Monica's Apartment)
@@ -5755,7 +5759,9 @@ function animate(timeMs) {
     }
   }
 
-  if (camTargetPos && camTargetLook) {
+  if (typeof TourEngine !== 'undefined' && TourEngine.isPlaying()) {
+    TourEngine.update(deltaMs);
+  } else if (camTargetPos && camTargetLook) {
     camera.position.lerp(camTargetPos, 0.075);
     controls.target.lerp(camTargetLook, 0.075);
     if (camera.position.distanceTo(camTargetPos) < 0.08) {
@@ -6585,6 +6591,8 @@ function closeAllPanels() {
   document.getElementById('vocab-overlay')?.classList.add('hidden');
   document.getElementById('ref-overlay')?.classList.add('hidden');
   document.getElementById('polaroid-modal')?.classList.add('hidden');
+  document.getElementById('tour-modal')?.classList.add('hidden');
+  document.getElementById('video-modal')?.classList.add('hidden');
   document.getElementById('panel-overlay')?.classList.add('hidden');
   closeDialogueCard();
 }
@@ -6609,6 +6617,9 @@ const SoundEngine = (() => {
     window.speechSynthesis.onvoiceschanged = refreshVoices;
   }
 
+  let masterGain = null;
+  let streamDest = null;
+
   function ensureContext() {
     if (!ctx && typeof window !== 'undefined') {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -6617,7 +6628,25 @@ const SoundEngine = (() => {
     if (ctx && ctx.state === 'suspended') {
       ctx.resume();
     }
+    if (ctx && !masterGain) {
+      try {
+        masterGain = ctx.createGain();
+        masterGain.gain.setValueAtTime(1.0, ctx.currentTime);
+        masterGain.connect(ctx.destination);
+        if (ctx.createMediaStreamDestination) {
+          streamDest = ctx.createMediaStreamDestination();
+          masterGain.connect(streamDest);
+        }
+      } catch (e) {
+        console.warn('Audio setup error:', e);
+      }
+    }
     return ctx;
+  }
+
+  function getAudioDest() {
+    const audio = ensureContext();
+    return masterGain || (audio ? audio.destination : null);
   }
 
   // Pluck a warm acoustic guitar / electric piano note
@@ -6650,7 +6679,7 @@ const SoundEngine = (() => {
     sub.connect(subGain);
     subGain.connect(filter);
     filter.connect(gain);
-    gain.connect(audio.destination);
+    gain.connect(getAudioDest() || audio.destination);
 
     osc.start(startTime);
     sub.start(startTime);
@@ -6747,7 +6776,7 @@ const SoundEngine = (() => {
 
         osc.connect(filter);
         filter.connect(gain);
-        gain.connect(audio.destination);
+        gain.connect(getAudioDest() || audio.destination);
         osc.start(now + offset);
         osc.stop(now + offset + 0.2);
       });
@@ -6772,7 +6801,7 @@ const SoundEngine = (() => {
 
       noise.connect(filter);
       filter.connect(gain);
-      gain.connect(audio.destination);
+      gain.connect(getAudioDest() || audio.destination);
       noise.start(now);
       // Cup clink
       playNote(2650, now + 0.12, 0.14, 0.03, 'sine');
@@ -6789,7 +6818,7 @@ const SoundEngine = (() => {
       gain.gain.setValueAtTime(0.025, now + 0.1);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
       osc.connect(gain);
-      gain.connect(audio.destination);
+      gain.connect(getAudioDest() || audio.destination);
       osc.start(now + 0.1);
       osc.stop(now + 0.42);
     } else if (type === 'door') {
@@ -6944,6 +6973,7 @@ const SoundEngine = (() => {
     playSmellyCatSong,
     speakLine,
     speakWord,
+    getAudioStream: () => streamDest ? streamDest.stream : null,
     isMuted: () => isMuted
   };
 })();
@@ -7195,6 +7225,506 @@ function flash(msg) {
   el._t = setTimeout(() => el.classList.remove('show'), 2300);
 }
 
+// ==================== CLEAN SCREEN / HIDE HUD MODE (清屏模式) ====================
+let isCleanScreen = false;
+
+function toggleCleanScreen(force) {
+  isCleanScreen = (force !== undefined) ? force : !isCleanScreen;
+  document.body.classList.toggle('clean-screen-mode', isCleanScreen);
+
+  const toast = document.getElementById('clean-screen-toast');
+  if (toast) {
+    toast.classList.toggle('hidden', !isCleanScreen);
+  }
+
+  const btn = document.getElementById('clean-screen-btn');
+  if (btn) {
+    btn.classList.toggle('active', isCleanScreen);
+  }
+
+  SoundEngine.playSFX('pop');
+  if (isCleanScreen) {
+    flash('🔲 已开启清屏模式 (纯享微缩景观，按 H 键恢复界面)');
+  } else {
+    flash('👁️ 已恢复界面显示');
+  }
+}
+
+// ==================== CINEMATIC CAMERA TOURS & CHOREOGRAPHY (电影级运镜系统) ====================
+const TourEngine = (() => {
+  let isPlaying = false;
+  let isPaused = false;
+  let currentTourKey = '';
+  let elapsedMs = 0;
+  let totalDurationMs = 16000;
+  let speedMultiplier = 1.0;
+  let posCurve = null;
+  let lookCurve = null;
+  let autoRecording = false;
+
+  const TOURS = {
+    orbit360: {
+      title: "360° 微缩环绕漫游",
+      duration: 16000,
+      targetLocation: null,
+      getWaypoints: () => {
+        const isMonica = (currentLocation === 'monica');
+        const radius = isMonica ? 88.0 : 44.0;
+        const height = isMonica ? 54.0 : 28.0;
+        const lookCenter = isMonica ? new THREE.Vector3(0, 2.0, -1.0) : new THREE.Vector3(-0.3, 1.8, 0.4);
+        const pts = [];
+        const looks = [];
+        const count = 12;
+        for (let i = 0; i <= count; i++) {
+          const theta = (i / count) * Math.PI * 2;
+          pts.push(new THREE.Vector3(
+            lookCenter.x + Math.sin(theta) * radius,
+            height,
+            lookCenter.z + Math.cos(theta) * radius
+          ));
+          looks.push(lookCenter.clone());
+        }
+        return { positions: pts, looks };
+      }
+    },
+    cafeClassic: {
+      title: "Central Perk 经典剧情漫游",
+      duration: 24000,
+      targetLocation: 'cafe',
+      getWaypoints: () => {
+        const waypoints = [
+          { pos: new THREE.Vector3(-27.5, 27.0, 35.0), look: new THREE.Vector3(-0.3, 1.8, 0.4) },
+          { pos: new THREE.Vector3(-14.0, 11.5, 24.0), look: new THREE.Vector3(-2.0, 2.5, 12.0) },
+          { pos: new THREE.Vector3(-0.8, 5.8, 12.8), look: new THREE.Vector3(-0.6, 2.0, 4.0) },
+          { pos: new THREE.Vector3(-4.2, 6.8, 10.5), look: new THREE.Vector3(-9.2, 2.6, -0.5) },
+          { pos: new THREE.Vector3(4.0, 7.2, 11.8), look: new THREE.Vector3(10.2, 2.5, 2.2) },
+          { pos: new THREE.Vector3(-24.0, 24.0, 32.0), look: new THREE.Vector3(-0.3, 1.8, 0.4) }
+        ];
+        return {
+          positions: waypoints.map(w => w.pos),
+          looks: waypoints.map(w => w.look)
+        };
+      }
+    },
+    apt4thFloor: {
+      title: "4楼双公寓穿梭巡礼",
+      duration: 26000,
+      targetLocation: 'monica',
+      getWaypoints: () => {
+        const waypoints = [
+          { pos: new THREE.Vector3(0.0, 56.0, 88.0), look: new THREE.Vector3(0.0, 2.0, -1.0) },
+          { pos: new THREE.Vector3(3.2, 6.2, 11.5), look: new THREE.Vector3(1.2, 3.8, 4.5) },
+          { pos: new THREE.Vector3(18.5, 11.0, 16.5), look: new THREE.Vector3(16.8, 2.2, 1.5) },
+          { pos: new THREE.Vector3(-2.0, 8.5, 12.0), look: new THREE.Vector3(-10.0, 3.0, 2.0) },
+          { pos: new THREE.Vector3(-19.0, 11.0, 16.5), look: new THREE.Vector3(-16.5, 2.2, 1.5) },
+          { pos: new THREE.Vector3(0.0, 52.0, 82.0), look: new THREE.Vector3(0.0, 2.0, -1.0) }
+        ];
+        return {
+          positions: waypoints.map(w => w.pos),
+          looks: waypoints.map(w => w.look)
+        };
+      }
+    },
+    streetView: {
+      title: "纽约街景与窗台特写",
+      duration: 18000,
+      targetLocation: 'cafe',
+      getWaypoints: () => {
+        const waypoints = [
+          { pos: new THREE.Vector3(-18.0, 8.0, 18.0), look: new THREE.Vector3(-14.0, 6.5, 6.0) },
+          { pos: new THREE.Vector3(-12.0, 4.0, 26.0), look: new THREE.Vector3(0.0, 1.2, 22.0) },
+          { pos: new THREE.Vector3(16.0, 8.0, 18.0), look: new THREE.Vector3(12.0, 5.0, 8.0) },
+          { pos: new THREE.Vector3(-24.0, 22.0, 32.0), look: new THREE.Vector3(-0.3, 1.8, 0.4) }
+        ];
+        return {
+          positions: waypoints.map(w => w.pos),
+          looks: waypoints.map(w => w.look)
+        };
+      }
+    }
+  };
+
+  function startTour(key, opts = {}) {
+    const tourDef = TOURS[key];
+    if (!tourDef) return;
+
+    if (tourDef.targetLocation && tourDef.targetLocation !== currentLocation) {
+      if (!spinTransition) {
+        switchDioramaScene();
+      }
+      setTimeout(() => startTour(key, opts), 1200);
+      return;
+    }
+
+    currentTourKey = key;
+    elapsedMs = 0;
+    speedMultiplier = opts.speed || 1.0;
+    totalDurationMs = tourDef.duration / speedMultiplier;
+    isPaused = false;
+    isPlaying = true;
+    autoRecording = opts.autoRecord ?? (document.getElementById('tour-auto-record')?.checked ?? true);
+
+    const { positions, looks } = tourDef.getWaypoints();
+    posCurve = new THREE.CatmullRomCurve3(positions);
+    lookCurve = new THREE.CatmullRomCurve3(looks);
+
+    camTargetPos = null;
+    camTargetLook = null;
+    controls.enabled = false;
+
+    closeTourModal();
+
+    const hud = document.getElementById('tour-hud');
+    if (hud) hud.classList.remove('hidden');
+    const titleEl = document.getElementById('tour-hud-title');
+    if (titleEl) titleEl.textContent = tourDef.title;
+    updateHudTime();
+
+    const autoClean = document.getElementById('tour-auto-clean')?.checked ?? true;
+    if (autoClean && !isCleanScreen) {
+      toggleCleanScreen(true);
+    }
+
+    if (autoRecording && !RecorderEngine.isRecordingActive()) {
+      RecorderEngine.startRecording({ autoStopWithTour: true });
+    }
+
+    flash(`🎬 运镜启航：${tourDef.title}`);
+  }
+
+  function pauseTour() {
+    if (!isPlaying) return;
+    isPaused = !isPaused;
+    const pauseBtn = document.getElementById('tour-pause-btn');
+    if (pauseBtn) pauseBtn.textContent = isPaused ? '▶️' : '⏸️';
+    flash(isPaused ? '⏸️ 运镜已暂停' : '▶️ 运镜继续');
+  }
+
+  function cycleSpeed() {
+    if (speedMultiplier === 1.0) speedMultiplier = 1.5;
+    else if (speedMultiplier === 1.5) speedMultiplier = 2.0;
+    else speedMultiplier = 1.0;
+
+    const speedBtn = document.getElementById('tour-speed-btn');
+    if (speedBtn) speedBtn.textContent = `${speedMultiplier.toFixed(1)}x`;
+
+    const tourDef = TOURS[currentTourKey];
+    if (tourDef) {
+      const remainingProgress = 1 - (elapsedMs / totalDurationMs);
+      totalDurationMs = (tourDef.duration / speedMultiplier);
+      elapsedMs = (1 - remainingProgress) * totalDurationMs;
+    }
+  }
+
+  function stopTour(completed = false) {
+    if (!isPlaying) return;
+    isPlaying = false;
+    isPaused = false;
+    controls.enabled = true;
+
+    const hud = document.getElementById('tour-hud');
+    if (hud) hud.classList.add('hidden');
+
+    if (completed) {
+      SoundEngine.playSFX('door');
+      flash('🎬 运镜完成！微缩景观巡礼结束');
+      if (autoRecording && RecorderEngine.isRecordingActive()) {
+        setTimeout(() => RecorderEngine.stopRecording(), 600);
+      }
+    } else {
+      flash('⏹️ 已退出运镜，恢复视角自由控制');
+    }
+  }
+
+  function update(deltaMs) {
+    if (!isPlaying || isPaused || !posCurve || !lookCurve) return;
+    elapsedMs += deltaMs * speedMultiplier;
+    const u = THREE.MathUtils.clamp(elapsedMs / totalDurationMs, 0, 1);
+
+    posCurve.getPoint(u, camera.position);
+    lookCurve.getPoint(u, controls.target);
+
+    const progressEl = document.getElementById('tour-hud-progress');
+    if (progressEl) progressEl.style.width = `${(u * 100).toFixed(1)}%`;
+    updateHudTime();
+
+    if (u >= 1) {
+      stopTour(true);
+    }
+  }
+
+  function updateHudTime() {
+    const timeEl = document.getElementById('tour-hud-time');
+    if (!timeEl) return;
+    const curSec = Math.floor(elapsedMs / 1000);
+    const totSec = Math.floor(totalDurationMs / 1000);
+    const formatTime = (s) => {
+      const m = Math.floor(s / 60).toString().padStart(2, '0');
+      const sec = (s % 60).toString().padStart(2, '0');
+      return `${m}:${sec}`;
+    };
+    timeEl.textContent = `${formatTime(curSec)} / ${formatTime(totSec)}`;
+  }
+
+  return {
+    startTour,
+    pauseTour,
+    cycleSpeed,
+    stopTour,
+    update,
+    isPlaying: () => isPlaying,
+    isPaused: () => isPaused
+  };
+})();
+
+// ==================== SOCIAL MEDIA VIDEO & CLEAN SNAPSHOT RECORDING (录屏与记录功能) ====================
+const RecorderEngine = (() => {
+  let mediaRecorder = null;
+  let recordedChunks = [];
+  let recordTimer = null;
+  let startTime = 0;
+  let isRecording = false;
+  let currentBlobUrl = null;
+  let autoStopWithTour = false;
+
+  function isRecordingActive() {
+    return isRecording;
+  }
+
+  function startRecording(opts = {}) {
+    if (isRecording) return;
+    const canvas = document.getElementById('voxel-canvas');
+    if (!canvas) {
+      flash('❌ 未找到 3D 渲染画布');
+      return;
+    }
+
+    if (typeof MediaRecorder === 'undefined') {
+      flash('⚠️ 当前浏览器不支持 MediaRecorder，建议使用 Safari 或 Chrome 最新版');
+      return;
+    }
+
+    autoStopWithTour = !!opts.autoStopWithTour;
+
+    try {
+      const canvasStream = canvas.captureStream ? canvas.captureStream(60) : canvas.mozCaptureStream(60);
+      const audioStream = SoundEngine.getAudioStream ? SoundEngine.getAudioStream() : null;
+
+      let combinedStream;
+      if (audioStream && audioStream.getAudioTracks().length > 0) {
+        combinedStream = new MediaStream([
+          ...canvasStream.getVideoTracks(),
+          ...audioStream.getAudioTracks()
+        ]);
+      } else {
+        combinedStream = canvasStream;
+      }
+
+      const mimeTypes = [
+        'video/mp4;codecs=avc1,mp4a.40.2',
+        'video/mp4',
+        'video/webm;codecs=vp9,opus',
+        'video/webm;codecs=vp8,opus',
+        'video/webm'
+      ];
+      let selectedMime = mimeTypes.find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || '';
+
+      const recOptions = { videoBitsPerSecond: 8000000 };
+      if (selectedMime) recOptions.mimeType = selectedMime;
+
+      mediaRecorder = new MediaRecorder(combinedStream, recOptions);
+      recordedChunks = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) {
+          recordedChunks.push(e.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        clearInterval(recordTimer);
+        const recBar = document.getElementById('rec-bar');
+        if (recBar) recBar.classList.add('hidden');
+        isRecording = false;
+
+        if (recordedChunks.length === 0) {
+          flash('⚠️ 未录制到有效视频帧');
+          return;
+        }
+
+        const mime = selectedMime || 'video/webm';
+        const isMp4 = mime.includes('mp4');
+        const ext = isMp4 ? 'mp4' : 'webm';
+        const blob = new Blob(recordedChunks, { type: mime });
+
+        if (currentBlobUrl) URL.revokeObjectURL(currentBlobUrl);
+        currentBlobUrl = URL.createObjectURL(blob);
+
+        const now = new Date();
+        const stamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}${String(now.getSeconds()).padStart(2, '0')}`;
+        const locName = currentLocation === 'monica' ? '4thFloorApartments' : 'CentralPerk';
+        const filename = `Friends-3D-${locName}-${stamp}.${ext}`;
+
+        const a = document.createElement('a');
+        a.href = currentBlobUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        showVideoModal(currentBlobUrl, filename);
+        SoundEngine.playSFX('shutter');
+        flash(`🎉 录屏已完成并开始下载：${filename}`);
+      };
+
+      mediaRecorder.start(250);
+      isRecording = true;
+      startTime = Date.now();
+
+      const recBar = document.getElementById('rec-bar');
+      if (recBar) recBar.classList.remove('hidden');
+      const timerEl = document.getElementById('rec-timer');
+      if (timerEl) timerEl.textContent = '00:00';
+
+      recordTimer = setInterval(() => {
+        const sec = Math.floor((Date.now() - startTime) / 1000);
+        const m = Math.floor(sec / 60).toString().padStart(2, '0');
+        const s = (sec % 60).toString().padStart(2, '0');
+        if (timerEl) timerEl.textContent = `${m}:${s}`;
+      }, 500);
+
+      if (opts.autoClean && !isCleanScreen) {
+        toggleCleanScreen(true);
+      }
+
+      closeTourModal();
+      SoundEngine.playSFX('pop');
+      flash('⏺️ 录屏已开始！按顶部栏或悬浮条可随时完成保存');
+    } catch (err) {
+      console.error('Failed to start recording:', err);
+      flash(`⚠️ 启动录屏失败: ${err.message}`);
+    }
+  }
+
+  function stopRecording() {
+    if (!isRecording || !mediaRecorder) return;
+    try {
+      mediaRecorder.stop();
+    } catch (err) {
+      console.error('Stop recording error:', err);
+    }
+  }
+
+  function cancelRecording() {
+    if (!isRecording || !mediaRecorder) return;
+    try {
+      mediaRecorder.ondataavailable = null;
+      mediaRecorder.onstop = null;
+      mediaRecorder.stop();
+    } catch (e) {}
+    clearInterval(recordTimer);
+    const recBar = document.getElementById('rec-bar');
+    if (recBar) recBar.classList.add('hidden');
+    isRecording = false;
+    recordedChunks = [];
+    flash('✕ 已取消本次录制');
+  }
+
+  function takeCleanSnapshot() {
+    SoundEngine.playSFX('shutter');
+    const flashEl = document.getElementById('shutter-flash');
+    if (flashEl) {
+      flashEl.classList.remove('hidden');
+      requestAnimationFrame(() => flashEl.classList.add('active'));
+      setTimeout(() => {
+        flashEl.classList.remove('active');
+        setTimeout(() => flashEl.classList.add('hidden'), 250);
+      }, 280);
+    }
+
+    const labels = document.getElementById('labels-layer');
+    const bubbles = document.getElementById('bubbles-layer');
+    const prevLabels = labels ? labels.style.display : '';
+    const prevBubbles = bubbles ? bubbles.style.display : '';
+    if (labels) labels.style.display = 'none';
+    if (bubbles) bubbles.style.display = 'none';
+
+    renderer.render(scene, camera);
+    const dataUrl = renderer.domElement.toDataURL('image/png');
+
+    if (labels) labels.style.display = prevLabels;
+    if (bubbles) bubbles.style.display = prevBubbles;
+
+    const now = new Date();
+    const stamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
+    const filename = `Friends-3D-${currentLocation === 'monica' ? 'Apartments' : 'CentralPerk'}-Snapshot-${stamp}.png`;
+
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    flash(`📸 已导出超清无遮挡 PNG 截图：${filename}`);
+  }
+
+  return {
+    startRecording,
+    stopRecording,
+    cancelRecording,
+    takeCleanSnapshot,
+    isRecordingActive
+  };
+})();
+
+// ==================== TOUR & VIDEO MODAL CONTROLLERS ====================
+function openTourModal() {
+  closeAllPanels();
+  const modal = document.getElementById('tour-modal');
+  if (modal) modal.classList.remove('hidden');
+  const overlay = document.getElementById('panel-overlay');
+  if (overlay) overlay.classList.remove('hidden');
+  SoundEngine.playSFX('pop');
+}
+
+function closeTourModal() {
+  const modal = document.getElementById('tour-modal');
+  if (modal) modal.classList.add('hidden');
+  const overlay = document.getElementById('panel-overlay');
+  if (overlay) overlay.classList.add('hidden');
+}
+
+let lastExportedVideoUrl = '';
+let lastExportedVideoName = '';
+
+function showVideoModal(url, filename) {
+  lastExportedVideoUrl = url;
+  lastExportedVideoName = filename;
+  const modal = document.getElementById('video-modal');
+  if (modal) modal.classList.remove('hidden');
+  const overlay = document.getElementById('panel-overlay');
+  if (overlay) overlay.classList.remove('hidden');
+
+  const video = document.getElementById('video-preview');
+  if (video) {
+    video.src = url;
+    video.play().catch(() => {});
+  }
+}
+
+function closeVideoModal() {
+  const modal = document.getElementById('video-modal');
+  if (modal) modal.classList.add('hidden');
+  const overlay = document.getElementById('panel-overlay');
+  if (overlay) overlay.classList.add('hidden');
+  const video = document.getElementById('video-preview');
+  if (video) {
+    video.pause();
+    video.src = '';
+  }
+}
+
 // ==================== UI BINDINGS & BOOTSTRAP ====================
 function bindUIEvents() {
   const panelOverlay = document.getElementById('panel-overlay');
@@ -7277,6 +7807,63 @@ function bindUIEvents() {
   document.getElementById('polaroid-retake')?.addEventListener('click', () => {
     closeAllPanels();
     setTimeout(takePolaroidSnapshot, 260);
+  });
+
+  // Cinematic Tours, Screen Recording & Clean Screen Controls
+  document.getElementById('tour-btn')?.addEventListener('click', openTourModal);
+  document.getElementById('dock-tour-btn')?.addEventListener('click', openTourModal);
+  document.getElementById('record-btn')?.addEventListener('click', () => {
+    if (RecorderEngine.isRecordingActive()) {
+      RecorderEngine.stopRecording();
+    } else {
+      openTourModal();
+    }
+  });
+  document.getElementById('clean-screen-btn')?.addEventListener('click', () => toggleCleanScreen());
+  document.getElementById('clean-screen-toast')?.addEventListener('click', () => toggleCleanScreen(false));
+
+  // Tour Modal Actions
+  document.getElementById('tour-modal-close')?.addEventListener('click', closeTourModal);
+  document.querySelectorAll('.tour-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const tourKey = card.dataset.tour;
+      if (tourKey) TourEngine.startTour(tourKey);
+    });
+  });
+  document.getElementById('modal-start-record-btn')?.addEventListener('click', () => {
+    const autoClean = document.getElementById('tour-auto-clean')?.checked ?? true;
+    RecorderEngine.startRecording({ autoClean });
+  });
+  document.getElementById('modal-clean-snap-btn')?.addEventListener('click', () => {
+    RecorderEngine.takeCleanSnapshot();
+  });
+  document.getElementById('modal-clean-screen-btn')?.addEventListener('click', () => {
+    closeTourModal();
+    toggleCleanScreen(true);
+  });
+
+  // Floating REC Bar Controls
+  document.getElementById('rec-stop-btn')?.addEventListener('click', () => RecorderEngine.stopRecording());
+  document.getElementById('rec-cancel-btn')?.addEventListener('click', () => RecorderEngine.cancelRecording());
+
+  // Floating Tour HUD Controls
+  document.getElementById('tour-pause-btn')?.addEventListener('click', () => TourEngine.pauseTour());
+  document.getElementById('tour-speed-btn')?.addEventListener('click', () => TourEngine.cycleSpeed());
+  document.getElementById('tour-stop-btn')?.addEventListener('click', () => TourEngine.stopTour(false));
+
+  // Video Export Celebration Modal
+  document.getElementById('video-modal-close')?.addEventListener('click', closeVideoModal);
+  document.getElementById('video-close-btn')?.addEventListener('click', closeVideoModal);
+  document.getElementById('video-redownload-btn')?.addEventListener('click', () => {
+    if (lastExportedVideoUrl && lastExportedVideoName) {
+      const a = document.createElement('a');
+      a.href = lastExportedVideoUrl;
+      a.download = lastExportedVideoName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      flash('⬇️ 已重新开始下载视频');
+    }
   });
 
   panelOverlay?.addEventListener('click', closeAllPanels);
@@ -7413,7 +8000,19 @@ function bindUIEvents() {
   });
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeAllPanels();
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+    if (e.key === 'Escape') {
+      if (TourEngine.isPlaying()) {
+        TourEngine.stopTour(false);
+      } else if (isCleanScreen) {
+        toggleCleanScreen(false);
+      } else {
+        closeAllPanels();
+      }
+    } else if (e.key === 'h' || e.key === 'H') {
+      e.preventDefault();
+      toggleCleanScreen();
+    }
   });
 }
 
