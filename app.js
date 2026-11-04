@@ -4527,18 +4527,30 @@ function buildAllCharacters() {
 }
 
 // ==================== 3D SPINNING DIORAMA SCENE SWITCHER (Central Perk <-> Monica's Apartment 20) ====================
-function switchDioramaScene() {
+function switchDioramaScene(targetLoc = null) {
   if (spinTransition) return; // Prevent double-trigger while spinning
+  const nextLoc = targetLoc ? targetLoc : (currentLocation === 'cafe' ? 'monica' : 'cafe');
+  if (targetLoc && nextLoc === currentLocation) {
+    const hereTitle = currentLocation === 'monica' ? "🏢 当前已在 4楼双公寓 (Monica & Joey)" : "☕ 当前已在 Central Perk 咖啡馆";
+    flash(hereTitle);
+    return;
+  }
   SoundEngine.playSFX('door');
-  const nextLoc = currentLocation === 'cafe' ? 'monica' : 'cafe';
   spinTransition = {
     startTime: performance.now(),
     duration: 1150,
     targetLocation: nextLoc,
     swapped: false
   };
-  const destTitle = nextLoc === 'monica' ? "🚪 正在旋转微缩孤岛 · 前往 Monica 的紫门公寓 (Apt 20)..." : "☕ 正在旋转微缩孤岛 · 返回 Central Perk 咖啡馆...";
+  const destTitle = nextLoc === 'monica' ? "🚪 正在旋转微缩孤岛 · 前往 4楼双公寓 (快捷键: S / Tab)..." : "☕ 正在旋转微缩孤岛 · 返回 Central Perk 咖啡馆 (快捷键: S / Tab)...";
   flash(destTitle);
+
+  // Button pulse animation
+  const btn = document.getElementById('scene-switch-btn');
+  if (btn) {
+    btn.classList.add('btn-press-pulse');
+    setTimeout(() => btn.classList.remove('btn-press-pulse'), 320);
+  }
 }
 
 function applyLocationState(loc) {
@@ -8000,9 +8012,9 @@ function bindUIEvents() {
   });
 
   document.addEventListener('keydown', e => {
-    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) return;
     if (e.key === 'Escape') {
-      if (TourEngine.isPlaying()) {
+      if (typeof TourEngine !== 'undefined' && TourEngine.isPlaying()) {
         TourEngine.stopTour(false);
       } else if (isCleanScreen) {
         toggleCleanScreen(false);
@@ -8012,6 +8024,27 @@ function bindUIEvents() {
     } else if (e.key === 'h' || e.key === 'H') {
       e.preventDefault();
       toggleCleanScreen();
+    } else if (e.key === 's' || e.key === 'S' || e.key === 'Tab') {
+      e.preventDefault();
+      switchDioramaScene();
+    } else if (e.key === '1') {
+      e.preventDefault();
+      switchDioramaScene('cafe');
+    } else if (e.key === '2') {
+      e.preventDefault();
+      switchDioramaScene('monica');
+    } else if (e.code === 'Space') {
+      if (typeof TourEngine !== 'undefined' && TourEngine.isPlaying()) {
+        e.preventDefault();
+        TourEngine.pauseTour();
+      }
+    } else if (e.key === 'r' || e.key === 'R') {
+      e.preventDefault();
+      if (typeof RecorderEngine !== 'undefined' && RecorderEngine.isRecordingActive()) {
+        RecorderEngine.stopRecording();
+      } else {
+        openTourModal();
+      }
     }
   });
 }
