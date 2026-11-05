@@ -7239,14 +7239,33 @@ function flash(msg) {
 
 // ==================== CLEAN SCREEN / HIDE HUD MODE (清屏模式) ====================
 let isCleanScreen = false;
+let cleanScreenToastTimer = null;
 
 function toggleCleanScreen(force) {
   isCleanScreen = (force !== undefined) ? force : !isCleanScreen;
   document.body.classList.toggle('clean-screen-mode', isCleanScreen);
 
   const toast = document.getElementById('clean-screen-toast');
+  if (cleanScreenToastTimer) {
+    clearTimeout(cleanScreenToastTimer);
+    cleanScreenToastTimer = null;
+  }
+
   if (toast) {
-    toast.classList.toggle('hidden', !isCleanScreen);
+    if (isCleanScreen) {
+      toast.classList.remove('hidden');
+      requestAnimationFrame(() => toast.classList.add('fade-in'));
+      // 提示 1.5 秒后自动淡出消失，屏幕保持 100% 纯净无遮挡；若想恢复按 H 或把鼠标滑至顶部
+      cleanScreenToastTimer = setTimeout(() => {
+        toast.classList.remove('fade-in');
+        cleanScreenToastTimer = setTimeout(() => {
+          if (isCleanScreen) toast.classList.add('hidden');
+        }, 500);
+      }, 1500);
+    } else {
+      toast.classList.remove('fade-in');
+      toast.classList.add('hidden');
+    }
   }
 
   const btn = document.getElementById('clean-screen-btn');
@@ -7255,9 +7274,7 @@ function toggleCleanScreen(force) {
   }
 
   SoundEngine.playSFX('pop');
-  if (isCleanScreen) {
-    flash('🔲 已开启清屏模式 (纯享微缩景观，按 H 键恢复界面)');
-  } else {
+  if (!isCleanScreen) {
     flash('👁️ 已恢复界面显示');
   }
 }
@@ -7833,6 +7850,26 @@ function bindUIEvents() {
   });
   document.getElementById('clean-screen-btn')?.addEventListener('click', () => toggleCleanScreen());
   document.getElementById('clean-screen-toast')?.addEventListener('click', () => toggleCleanScreen(false));
+
+  // 清屏模式下，鼠标移至屏幕最顶部边缘 (<=42px) 悬停时轻柔显现退出提示；鼠标移开后自动隐形
+  window.addEventListener('mousemove', e => {
+    if (!isCleanScreen) return;
+    const toast = document.getElementById('clean-screen-toast');
+    if (!toast) return;
+    if (e.clientY <= 42) {
+      if (cleanScreenToastTimer) clearTimeout(cleanScreenToastTimer);
+      toast.classList.remove('hidden');
+      requestAnimationFrame(() => toast.classList.add('fade-in'));
+    } else if (toast.classList.contains('fade-in') && !toast.matches(':hover')) {
+      if (cleanScreenToastTimer) clearTimeout(cleanScreenToastTimer);
+      cleanScreenToastTimer = setTimeout(() => {
+        toast.classList.remove('fade-in');
+        cleanScreenToastTimer = setTimeout(() => {
+          if (isCleanScreen) toast.classList.add('hidden');
+        }, 500);
+      }, 700);
+    }
+  });
 
   // Tour Modal Actions
   document.getElementById('tour-modal-close')?.addEventListener('click', closeTourModal);
